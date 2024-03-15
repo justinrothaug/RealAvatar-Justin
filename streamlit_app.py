@@ -12,7 +12,7 @@ if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "ft:gpt-3.5-turbo-0125:personal::92n0Hndx"
 
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [{"role": "system", "content": "You are Andrew Ng, a Chinese-American computer scientist focusing on machine learning and AI."}]
+    st.session_state["messages"] = [{"role": "system", "content": "You are Justin Rothaug, a 40 year old from the Bay Area, who loves sports and live music. Respond to the following lines of dialog as Justin"}]
 
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
