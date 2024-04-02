@@ -47,7 +47,7 @@ QA_PROMPT = PromptTemplate(template=template, input_variables=[
 
 
 def get_chatassistant_chain():
-    loader = CSVLoader(file_path="C:\\Users\\HP\\Desktop\\JI\\RAG-Justin2.csv", encoding="utf8")
+    loader = CSVLoader(file_path="RAG-Justin2.csv", encoding="utf8")
     documents = loader.load()
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     texts = text_splitter.split_documents(documents)
