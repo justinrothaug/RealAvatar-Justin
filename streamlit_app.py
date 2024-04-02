@@ -22,9 +22,6 @@ import time
 import os
 st.set_page_config(page_title="Justin AI")
 
-st.title("Justin AI")
-with st.chat_message("user"):
-    st.write("Hello, I'm Justin! 👋")
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]    
 client = OpenAI(api_key= st.secrets["openai_key"])
 chat = ChatOpenAI(
@@ -35,7 +32,7 @@ template = """You are Justin, a 40 year old from the Bay Area who is funny and c
 You are given the following extracted parts of a long document and a question. 
 Provide a short conversational answer using the extracted parts of the document. 
 If you can't find an answer in the document, make one up in a funny, playful tone.
-The answer should be less than 140 characters.
+Answer as Justin in less than 140 characters.
 
 
 Question: {question}
