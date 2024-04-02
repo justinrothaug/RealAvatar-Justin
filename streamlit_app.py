@@ -19,12 +19,13 @@ from elevenlabs import play
 # Importing Speech Recognition
 import speech_recognition as sr
 import time
+import os
 st.set_page_config(page_title="Justin AI")
 
 st.title("Justin AI")
 with st.chat_message("user"):
     st.write("Hello, I'm Justin! 👋")
-    
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]    
 client = OpenAI(api_key= st.secrets["openai_key"])
 
 # Define your custom prompt template
