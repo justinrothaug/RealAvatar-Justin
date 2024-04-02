@@ -27,7 +27,6 @@ with st.chat_message("user"):
     
 client = OpenAI(api_key= st.secrets["openai_key"])
 
-
 # Define your custom prompt template
 template = """You are Justin, a 40 year old from the Bay Area who is funny and charming.
 You are given the following extracted parts of a long document and a question. 
@@ -54,7 +53,7 @@ def get_chatassistant_chain():
     
     embeddings_model = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
     vectorstore = FAISS.from_documents(texts, embeddings_model)
-    llm = ChatOpenAI(model="ft:gpt-3.5-turbo-0125:personal::92WRQSTH", temperature=1)
+    llm = ChatOpenAI(openai_api_key=st.secrets["openai_key"], model="ft:gpt-3.5-turbo-0125:personal::92WRQSTH", temperature=1)
     memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
     chain=ConversationalRetrievalChain.from_llm(llm=ChatOpenAI(openai_api_key=st.secrets["openai_key"]), retriever=vectorstore.as_retriever(), memory=memory,combine_docs_chain_kwargs={"prompt": QA_PROMPT})
     return chain
