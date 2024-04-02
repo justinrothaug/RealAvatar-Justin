@@ -52,11 +52,11 @@ def get_chatassistant_chain():
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     texts = text_splitter.split_documents(documents)
     
-    embeddings_model = OpenAIEmbeddings(openai_api_key=client)
+    embeddings_model = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
     vectorstore = FAISS.from_documents(texts, embeddings_model)
     llm = ChatOpenAI(model="ft:gpt-3.5-turbo-0125:personal::92WRQSTH", temperature=1)
     memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-    chain=ConversationalRetrievalChain.from_llm(llm=ChatOpenAI(openai_api_key=client), retriever=vectorstore.as_retriever(), memory=memory,combine_docs_chain_kwargs={"prompt": QA_PROMPT})
+    chain=ConversationalRetrievalChain.from_llm(llm=ChatOpenAI(openai_api_key=st.secrets["openai_key"]), retriever=vectorstore.as_retriever(), memory=memory,combine_docs_chain_kwargs={"prompt": QA_PROMPT})
     return chain
 
 chain = get_chatassistant_chain()
