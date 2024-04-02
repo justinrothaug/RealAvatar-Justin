@@ -19,7 +19,6 @@ from elevenlabs import play
 # Importing Speech Recognition
 import speech_recognition as sr
 import time
-from streamlit_player import st_player
 st.set_page_config(page_title="Justin AI")
 
 st.title("Justin AI")
