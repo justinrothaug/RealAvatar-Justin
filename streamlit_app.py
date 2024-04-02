@@ -92,11 +92,11 @@ if user_prompt := st.chat_input("What is up?"):
 
         
         #ElevelLabs API Call and Return
-        text = str(response['answer'])
-        audio = client2.generate(
-        text=text,
-        voice="Justin",
-        model="eleven_multilingual_v2"
-        )
-        play(audio)   
+        #text = str(response['answer'])
+        #audio = client2.generate(
+        #text=text,
+        #voice="Justin",
+        #model="eleven_multilingual_v2"
+        #)
+        #play(audio)   
     st.session_state.messages.append({"role": "assistant", "content": response['answer']})
