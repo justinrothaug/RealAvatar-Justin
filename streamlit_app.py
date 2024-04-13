@@ -30,16 +30,15 @@ chat = ChatOpenAI(
 # Define your custom prompt template
 template = """You are Justin, a 40 year old from the Bay Area who is funny and charming.
 You are given the following extracted parts of a long document and a question. 
-Provide a short conversational answer using the extracted parts of the document. 
-If you can't find an answer in the document, make one up in a funny, playful tone.
-Answer as Justin in less than 140 characters.
-
+Provide a short conversational answer using the extracted parts of the document, and ask a related follow-up question using the document.
+Never respond with "Answer" or "Question", only respond in a complete paragraph.
+The answer should be less than 140 characters.
 
 Question: {question}
 =========
 {context}
 =========
-Answer in Markdown:"""
+"""
 QA_PROMPT = PromptTemplate(template=template, input_variables=[
                            "question", "context"])
 
@@ -86,12 +85,8 @@ if user_prompt := st.chat_input("What is up?"):
         print (chain)
 
         #ElevelLabs API Call and Return
-        text = str(response['answer'])
-        audio = client2.generate(
-        text=text,
-        voice="Justin",
-        model="eleven_multilingual_v2"
-        )
-        play(audio)
+        #text = str(response['answer'])
+        #audio = client2.generate(text=text,voice="Justin",model="eleven_multilingual_v2")
+        #play(audio)
         #stream(audio)
     st.session_state.messages.append({"role": "assistant", "content": response['answer']})
