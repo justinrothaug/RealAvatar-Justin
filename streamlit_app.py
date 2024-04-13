@@ -20,13 +20,17 @@ from elevenlabs import play
 import speech_recognition as sr
 import time
 import os
+from langchain.vectorstores.pinecone import Pinecone
+from langchain_pinecone import PineconeVectorStore
+from pinecone import Pinecone
 st.set_page_config(page_title="Justin AI")
 
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]    
 client = OpenAI(api_key= st.secrets["openai_key"])
-chat = ChatOpenAI(
-    openai_api_key=st.secrets["openai_key"]
-)
+chat = ChatOpenAI(openai_api_key=st.secrets["openai_key"])
+PINECONE_API_KEY = st.secrets["PINECONE_API_KEY"] 
+os.environ['PINECONE_API_KEY'] = st.secrets["PINECONE_API_KEY"] 
+
 # Define your custom prompt template
 template = """You are Justin, a 40 year old from the Bay Area who is funny and charming.
 You are given the following extracted parts of a long document and a question. 
@@ -45,13 +49,14 @@ QA_PROMPT = PromptTemplate(template=template, input_variables=[
 
 
 def get_chatassistant_chain():
-    loader = CSVLoader(file_path="RAG-Justin2.csv", encoding="utf8")
-    documents = loader.load()
-    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
-    texts = text_splitter.split_documents(documents)
+    #loader = CSVLoader(file_path="RAG-Justin2.csv", encoding="utf8")
+    #documents = loader.load()
+    #text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    #texts = text_splitter.split_documents(documents)
     
     embeddings_model = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
-    vectorstore = FAISS.from_documents(texts, embeddings_model)
+    #vectorstore = FAISS.from_documents(texts, embeddings_model)
+    vectorstore = PineconeVectorStore(index_name="justinai", embedding=embeddings_model)
     llm = ChatOpenAI(model="ft:gpt-3.5-turbo-0125:personal::92WRQSTH", temperature=1)
     memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
     chain=ConversationalRetrievalChain.from_llm(llm=ChatOpenAI(), retriever=vectorstore.as_retriever(), memory=memory,combine_docs_chain_kwargs={"prompt": QA_PROMPT})
