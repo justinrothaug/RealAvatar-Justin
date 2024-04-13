@@ -74,13 +74,49 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
         
-#user_prompt = st.chat_input()
+# Speech Recognition
+recognizer = sr.Recognizer()
+record = st.button(':violet[Voice Search] 🔍')
+if record:
+    with sr.Microphone() as source:
+        audio = recognizer.listen(source,phrase_time_limit=3)
+    try:
+        text = recognizer.recognize_google(audio).lower()  # You can choose a different 
+    except sr.UnknownValueError:
+        st.caption("Sorry, I could not understand what you said.")
+    user_prompt = text
 
+# Voice Search
+#if prompt := st.chat_input("What is up?"):
+# OPENAPI Call and Return
+    #st.session_state.messages.append({"role": "user", "content": user_prompt})
+    with st.chat_message("user"):
+        st.markdown(user_prompt)
+
+    with st.chat_message("assistant", avatar=assistant_logo):
+        message_placeholder = st.empty()
+        response = chain.invoke({"question": user_prompt})
+        message_placeholder.markdown(response['answer'])
+        #print (chain)
+
+        # ElevelLabs API Call and Return
+        text = str(response['answer'])
+        audio = client2.generate(
+        text=text,
+        voice="Justin",
+        model="eleven_multilingual_v2"
+        )
+        play(audio)
+    st.session_state.messages.append({"role": "assistant", "content": response['answer']})
+    
+
+
+# Text Search Instead
+#user_prompt = st.chat_input()
 if user_prompt := st.chat_input("What is up?"):
     st.session_state.messages.append({"role": "user", "content": user_prompt})
     with st.chat_message("user"):
         st.markdown(user_prompt)
-
 
     with st.chat_message("assistant", avatar=assistant_logo):
         message_placeholder = st.empty()
@@ -88,13 +124,13 @@ if user_prompt := st.chat_input("What is up?"):
         message_placeholder.markdown(response['answer'])
         print (chain)
 
-        
         #ElevelLabs API Call and Return
-        #text = str(response['answer'])
-        #audio = client2.generate(
-        #text=text,
-        #voice="Justin",
-        #model="eleven_multilingual_v2"
-        #)
-        #play(audio)   
+        text = str(response['answer'])
+        audio = client2.generate(
+        text=text,
+        voice="Justin",
+        model="eleven_multilingual_v2"
+        )
+        play(audio)
+        #stream(audio)
     st.session_state.messages.append({"role": "assistant", "content": response['answer']})
