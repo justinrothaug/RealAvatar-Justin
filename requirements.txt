@@ -15,4 +15,3 @@ faiss-cpu
 pypickle
 elevenlabs
 SpeechRecognition
-pyaudio
