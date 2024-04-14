@@ -16,3 +16,4 @@ pypickle
 elevenlabs
 SpeechRecognition
 streamlit-mic-recorder
+streamlit-player
