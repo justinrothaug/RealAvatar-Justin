@@ -87,7 +87,25 @@ text = speech_to_text(language='en', use_container_width=True, just_once=True, k
 if text:
     state.text_received.append(text)
     user_prompt = text
-  
+
+# OPENAPI Call and Return
+    #st.session_state.messages.append({"role": "user", "content": user_prompt})
+    with st.chat_message("user"):
+        st.markdown(user_prompt)
+
+    with st.chat_message("assistant", avatar=assistant_logo):
+        message_placeholder = st.empty()
+        response = chain.invoke({"question": user_prompt})
+        message_placeholder.markdown(response['answer'])
+
+ # ElevelLabs API Call and Return
+        #text = str(response['answer'])
+        #audio = client2.generate(text=text,voice="Justin",model="eleven_multilingual_v2")
+        #play(audio)
+    st.session_state.messages.append({"role": "assistant", "content": response['answer']})
+
+
+
 if user_prompt := st.chat_input("What is up?"):
     st.session_state.messages.append({"role": "user", "content": user_prompt})
     with st.chat_message("user"):
