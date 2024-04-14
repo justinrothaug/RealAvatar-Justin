@@ -18,6 +18,8 @@ from elevenlabs.client import ElevenLabs
 from elevenlabs import play
 # Importing Speech Recognition
 import speech_recognition as sr
+from streamlit_player import st_player
+from streamlit_mic_recorder import mic_recorder, speech_to_text
 import time
 import os
 from langchain.vectorstores.pinecone import Pinecone
