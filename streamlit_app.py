@@ -30,6 +30,9 @@ from streamlit_mic_recorder import mic_recorder, speech_to_text
 import base64
 import array
 
+st.set_page_config(page_title="Justin AI")
+
+
 #Add Keys
 CLAUDE_API_KEY= os.environ['CLAUDE_API_KEY']
 api_key= os.environ['CLAUDE_API_KEY']
@@ -117,7 +120,6 @@ with st.sidebar:
         state.text_received = []
    
 
-st.set_page_config(page_title="Justin AI", layout="wide")
 assistant_logo = 'https://media.licdn.com/dms/image/C5603AQEsY2cRFiJCLg/profile-displayphoto-shrink_200_200/0/1517054132693?e=2147483647&v=beta&t=KeDZ8nO3IuEdVvbgrz-xCgnkauK4DISvQZfPsF0O_dQ'
 # check for messages in session and create if not exists
 if "messages" not in st.session_state.keys():
