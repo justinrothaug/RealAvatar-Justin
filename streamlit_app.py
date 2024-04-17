@@ -86,15 +86,13 @@ def get_chatassistant_chain():
     llm = ChatOpenAI(model="gpt-4-turbo", temperature=1)
 
     memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-    chain=ConversationalRetrievalChain.from_llm(llm=ChatOpenAI(openai_api_key=client), retriever=vectorstore.as_retriever(), memory=memory,combine_docs_chain_kwargs={"prompt": QA_PROMPT})
+    chain=ConversationalRetrievalChain.from_llm(llm=llm, retriever=vectorstore.as_retriever(), memory=memory,combine_docs_chain_kwargs={"prompt": QA_PROMPT})
     return chain
 
 chain = get_chatassistant_chain()
 
 
 
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "ft:gpt-3.5-turbo-0125:personal::92WRQSTH"
 
 
 
