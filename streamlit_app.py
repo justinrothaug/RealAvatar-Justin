@@ -106,7 +106,7 @@ video_html = """
 
 # Sidebar to select LLM
 with st.sidebar:   
-    st.markdown("# Chat Options")
+    st.markdown("# Video Chat")
     # model names - https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
     #model = st.selectbox('What model would you like to use?',('gpt-4-turbo','claude-3-opus-20240229', 'llama-2-70b-chat', 'ft:gpt-3.5-turbo-0125'))
     st.markdown(video_html, unsafe_allow_html=True)
@@ -117,7 +117,7 @@ with st.sidebar:
         state.text_received = []
    
 
-
+st.set_page_config(page_title="Justin AI", layout="wide")
 assistant_logo = 'https://media.licdn.com/dms/image/C5603AQEsY2cRFiJCLg/profile-displayphoto-shrink_200_200/0/1517054132693?e=2147483647&v=beta&t=KeDZ8nO3IuEdVvbgrz-xCgnkauK4DISvQZfPsF0O_dQ'
 # check for messages in session and create if not exists
 if "messages" not in st.session_state.keys():
