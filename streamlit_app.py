@@ -86,7 +86,7 @@ def get_chatassistant_chain():
     #vectorstore = FAISS.from_documents(texts, embeddings_model)
     vectorstore = PineconeVectorStore(index_name="justinai", embedding=embeddings_model)
     #llm = ChatOpenAI(model="ft:gpt-3.5-turbo-0125:personal::92WRQSTH", temperature=1)
-    llm = ChatOpenAI(model="gpt-4-turbo", temperature=1)
+    llm = ChatOpenAI(model="gpt-4-turbo", temperature=.5)
 
     memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
     chain=ConversationalRetrievalChain.from_llm(llm=llm, retriever=vectorstore.as_retriever(), memory=memory,combine_docs_chain_kwargs={"prompt": QA_PROMPT})
