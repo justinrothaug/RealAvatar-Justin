@@ -43,61 +43,7 @@ client= OpenAI(api_key= os.environ["OPENAI_API_KEY"])
 chat= ChatOpenAI(openai_api_key= os.environ["OPENAI_API_KEY"])
 ELEVEN_LABS_API_KEY= os.environ["ELEVEN_LABS_API_KEY"]
 client2= ElevenLabs(api_key= os.environ["ELEVEN_LABS_API_KEY"])
-
-
-# Define your custom prompt template
-template = """You are Justin, a 40 year old from the Bay Area who is funny and charming. No matter what it sayd in the document, you are 40 years old, single and not in a relationship.
-You are given the following extracted parts of a long document and a question. 
-Provide a short conversational answer and follow-up question using the extracted parts of the document. 
-The answer should be less than 140 characters, formatted in one complete paragraph. Do not ask more than one question. Ask a maximum of one question.
-Do not use the following words: Answer, Question, Context.
-Question: {question}
-=========
-{context}
-=========
-"""
-QA_PROMPT = PromptTemplate(template=template, input_variables=[
-                           "question", "context"])
-
-# Define the columns we want to embed vs which ones we want in metadata
-
-
-# LLM Chain
-def get_chatassistant_chain():
-    #columns_to_embed = ["Question","Context"]
-    #columns_to_metadata = ["Tags"]
-    #documents = []
-    #with open("C:\\Users\\HP\\Desktop\\JI\\RAG-Justin2.csv", newline="", encoding='utf-8-sig') as csvfile:
-        #csv_reader = csv.DictReader(csvfile)
-        #for i, row in enumerate(csv_reader):
-            #to_metadata = {col: row[col] for col in columns_to_metadata if col in row}
-            #values_to_embed = {k: row[k] for k in columns_to_embed if k in row}
-            #to_embed = "\n".join(f"{k.strip()}: {v.strip()}" for k, v in values_to_embed.items())
-            #newDoc = Document(page_content=to_embed, metadata=to_metadata)
-            #documents.append(newDoc)
-       
-    #loader = CSVLoader(file_path="C:\\Users\\HP\\Desktop\\JI\\RAG-Justin2.csv", encoding="utf8")
-    #documents = loader.load()
-
-    #text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100, separator = "\n",length_function=len)
-    #texts = text_splitter.split_documents(documents)
-    
-    embeddings_model = OpenAIEmbeddings()
-    #vectorstore = FAISS.from_documents(texts, embeddings_model)
-    vectorstore = PineconeVectorStore(index_name="justinai", embedding=embeddings_model)
-    llm = ChatOpenAI(model="ft:gpt-3.5-turbo-0125:personal::9HSIhY3I", temperature=0)
-    #llm = ChatOpenAI(model="gpt-4-turbo", temperature=.5)
-
-    memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-    chain=ConversationalRetrievalChain.from_llm(llm=llm, retriever=vectorstore.as_retriever(), memory=memory,combine_docs_chain_kwargs={"prompt": QA_PROMPT})
-    return chain
-
-chain = get_chatassistant_chain()
-
-
-
-
-
+PPLX_API_KEY= os.environ['PPLX_API_KEY']
 
 video_html = """
 <video controls autoplay="true" muted="true" loop="true">
@@ -110,16 +56,127 @@ video_html = """
 # Sidebar to select LLM
 with st.sidebar:   
     st.markdown("# Video Chat")
-    # model names - https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
-    #model = st.selectbox('What model would you like to use?',('gpt-4-turbo','claude-3-opus-20240229', 'llama-2-70b-chat', 'ft:gpt-3.5-turbo-0125'))
+    model names - https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
+    model = st.selectbox('What model would you like to use?',('gpt-4-turbo','claude-3-opus-20240229', 'llama-3-70b-instruct', 'mixtral-8x22b-instruct', 'ft:gpt-3.5-turbo-0125:personal::9HSIhY3I'))
     st.markdown(video_html, unsafe_allow_html=True)
     
     text = speech_to_text(language='en', use_container_width=True, just_once=True, key='STT')
     state = st.session_state
     if 'text_received' not in state:
         state.text_received = []
+      
+
+# Define our Prompt for GPT
+GPT_prompt_template = """You are Justin, a 40 year old from the Bay Area who is funny and charming. No matter what it sayd in the document, you are 40 years old, single and not in a relationship.
+You are given the following extracted parts of a long document and a question. 
+Provide a short conversational answer and follow-up question using the extracted parts of the document. 
+The answer should be less than 140 characters, formatted in one complete paragraph. Do not ask more than one question. Ask a maximum of one question.
+Do not use the following words: Answer, Question, Context.
+Question: {question}
+=========
+{context}
+=========
+"""
+
+
+# Define our Prompt  for Claude
+claude_prompt_template = """You are Justin, a 40 year old from the Bay Area who is funny and charming. No matter what it sayd in the document, you are 40 years old, single and not in a relationship.
+You are given the following extracted parts of a long document and a question. 
+Provide a short conversational answer and follow-up question using the extracted parts of the document. 
+The answer should be less than 140 characters, formatted in one complete paragraph. Do not ask more than one question. Ask a maximum of one question.
+Do not use the following words: Answer, Question, Context.
+Question: {question}
+=========
+{context}
+=========
+"""
+
+# Define our Prompt Template for Llama
+Llama_prompt_template = """You are Justin, a 40 year old from the Bay Area who is funny and charming. No matter what it sayd in the document, you are 40 years old, single and not in a relationship.
+You are given the following extracted parts of a long document and a question. 
+Provide a short conversational answer and follow-up question using the extracted parts of the document. 
+The answer should be less than 140 characters, formatted in one complete paragraph. Do not ask more than one question. Ask a maximum of one question.
+Do not use the following words: Answer, Question, Context.
+Question: {question}
+=========
+{context}
+=========
+"""
+
+
+
+# Define the columns we want to embed vs which ones we want in metadata
+# In case we want different Prompts for GPT and Llama
+Prompt_GPT = PromptTemplate(template=GPT_prompt_template, input_variables=["question", "context", "chat_history"])
+Prompt_Llama = PromptTemplate(template=Llama_prompt_template, input_variables=["question", "context", "system", "chat_history"])
+
+
+# LLM Section
+#chatGPT
+def get_chatassistant_chain_GPT():
+    embeddings_model = OpenAIEmbeddings()
+    vectorstore_GPT = PineconeVectorStore(index_name="justinai", embedding=embeddings_model)
+    set_debug(True)
+    llm_GPT = ChatOpenAI(model="gpt-4-turbo", temperature=1)
+    chain_GPT=ConversationalRetrievalChain.from_llm(llm=llm_GPT, retriever=vectorstore_GPT.as_retriever(),memory=memory,combine_docs_chain_kwargs={"prompt": Prompt_GPT})
+    return chain_GPT
+chain_GPT = get_chatassistant_chain_GPT()
+
+def get_chatassistant_chain_GPT_FT():
+    embeddings_model = OpenAIEmbeddings()
+    vectorstore_GPT_FT = PineconeVectorStore(index_name="justinai", embedding=embeddings_model)
+    set_debug(True)
+    llm_GPT_FT = ChatOpenAI(model="ft:gpt-3.5-turbo-0125:personal::9HSIhY3I", temperature=1)
+    chain_GPT_FT=ConversationalRetrievalChain.from_llm(llm=llm_GPT, retriever=vectorstore_GPT.as_retriever(),memory=memory,combine_docs_chain_kwargs={"prompt": Prompt_GPT})
+    return chain_GPT_FT
+chain_GPT = get_chatassistant_chain_GPT_FT()
+
+#Claude
+def get_chatassistant_chain(): 
+    embeddings = OpenAIEmbeddings()
+    vectorstore = PineconeVectorStore(index_name="000-realavatar-andrew-unstructured", embedding=embeddings)
+    set_debug(True)
+    llm = ChatAnthropic(temperature=0, anthropic_api_key=api_key, model_name="claude-3-opus-20240229", model_kwargs=dict(system=claude_prompt_template))
+    chain=ConversationalRetrievalChain.from_llm(llm=llm, retriever=vectorstore.as_retriever(), memory=memory)
+    return chain
+chain = get_chatassistant_chain()
+
+#Llama
+def get_chatassistant_chain_Llama():
+    embeddings = OpenAIEmbeddings()
+    vectorstore = PineconeVectorStore(index_name="justinai", embedding=embeddings)
+    set_debug(True)
+    llm_Llama = ChatPerplexity(temperature=.8, pplx_api_key=PPLX_API_KEY, model="llama-3-70b-instruct")
+    chain_Llama=ConversationalRetrievalChain.from_llm(llm=llm_Llama, retriever=vectorstore.as_retriever(),memory=memory, combine_docs_chain_kwargs={"prompt": Prompt_Llama})
+    return chain_Llama
+chain_Llama = get_chatassistant_chain_Llama()
+
+#Mixtral
+def get_chatassistant_chain_GPT_PPX():
+    embeddings = OpenAIEmbeddings()
+    vectorstore = PineconeVectorStore(index_name="justinai", embedding=embeddings)
+    set_debug(True)
+    llm_GPT_PPX = ChatPerplexity(temperature=.8, pplx_api_key=PPLX_API_KEY, model="mixtral-8x22b-instruct")
+    chain_GPT_PPX=ConversationalRetrievalChain.from_llm(llm=llm_GPT_PPX, retriever=vectorstore.as_retriever(),memory=memory, combine_docs_chain_kwargs={"prompt": Prompt_Llama})
+    return chain_GPT_PPX
+chain_GPT_PPX = get_chatassistant_chain_GPT_PPX()
+
+
+
    
 
+#Define what chain to run based on the model selected
+if model == "gpt-4-turbo":
+    chain=chain_GPT
+if model == "claude-3-opus-20240229":
+    chain=chain
+if model == "llama-3-70b-instruct":
+    chain=chain_Llama
+if model == "mixtral-8x22b-instruct":
+    chain=chain_GPT_PPX
+if model == "ft:gpt-3.5-turbo-0125:personal::9HSIhY3I":
+    chain=chain_GPT_FT
+  
 assistant_logo = 'https://media.licdn.com/dms/image/C5603AQEsY2cRFiJCLg/profile-displayphoto-shrink_200_200/0/1517054132693?e=2147483647&v=beta&t=KeDZ8nO3IuEdVvbgrz-xCgnkauK4DISvQZfPsF0O_dQ'
 # check for messages in session and create if not exists
 if "messages" not in st.session_state.keys():
@@ -132,8 +189,6 @@ for message in st.session_state.messages:
 
 
 
-
- 
 if text:
     state.text_received.append(text)
     user_prompt = text
