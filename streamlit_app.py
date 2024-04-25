@@ -118,6 +118,11 @@ Prompt_GPT = PromptTemplate(template=GPT_prompt_template, input_variables=["ques
 Prompt_Llama = PromptTemplate(template=Llama_prompt_template, input_variables=["question", "context", "system", "chat_history"])
 
 
+
+# Add in Chat Memory
+msgs = StreamlitChatMessageHistory()
+memory=ConversationBufferMemory(memory_key="chat_history", chat_memory=msgs, return_messages=True, output_key='answer')
+
 # LLM Section
 #chatGPT
 def get_chatassistant_chain_GPT():
