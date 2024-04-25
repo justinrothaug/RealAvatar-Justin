@@ -105,7 +105,7 @@ You are given the following extracted parts of a long document and a question.
 Provide a short conversational answer and follow-up question using the extracted parts of the document. 
 The answer should be less than 140 characters, formatted in one complete paragraph. Do not ask more than one question. Ask a maximum of one question.
 
-Do not use the following words: Answer, Question, Context, Dude, Rad
+Do not use the following words: Answer, Question, Context, Dude, Rad. Say "Cool" instead of "Rad"
 Question: {question}
 =========
 {context}
