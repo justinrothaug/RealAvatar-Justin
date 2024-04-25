@@ -63,14 +63,15 @@ video_html = """
 # Sidebar to select LLM
 with st.sidebar:   
     st.markdown("# Video Chat")
-    #model names - https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
-    model = st.selectbox('What model would you like to use?',('gpt-4-turbo','claude-3-opus-20240229', 'llama-3-70b-instruct', 'mixtral-8x22b-instruct', 'ft:gpt-3.5-turbo-0125:personal::9HSIhY3I'))
     st.markdown(video_html, unsafe_allow_html=True)
     
     text = speech_to_text(language='en', use_container_width=True, just_once=True, key='STT')
     state = st.session_state
     if 'text_received' not in state:
         state.text_received = []
+                
+    #model names - https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
+    model = st.selectbox('What model would you like to use?',('claude-3-opus-20240229','gpt-4-turbo', 'llama-3-70b-instruct', 'mixtral-8x22b-instruct', 'ft:gpt-3.5-turbo-0125:personal::9HSIhY3I'))
       
 
 # Define our Prompt for GPT
