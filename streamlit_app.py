@@ -142,7 +142,7 @@ def get_chatassistant_chain_GPT_FT():
     llm_GPT_FT = ChatOpenAI(model="ft:gpt-3.5-turbo-0125:personal::9HSIhY3I", temperature=1)
     chain_GPT_FT=ConversationalRetrievalChain.from_llm(llm=llm_GPT_FT, retriever=vectorstore_GPT_FT.as_retriever(),memory=memory,combine_docs_chain_kwargs={"prompt": Prompt_GPT})
     return chain_GPT_FT
-chain_GPT = get_chatassistant_chain_GPT_FT()
+chain_GPT_FT = get_chatassistant_chain_GPT_FT()
 
 #Claude
 def get_chatassistant_chain(): 
@@ -215,7 +215,8 @@ if text:
 
         #ElevelLabs API Call and Return
         text = str(response['answer'])
-        audio = client2.generate(text=text,voice="Justin",model="eleven_turbo_v2")
+        cleaned = re.sub(r'\*.*?\*', '', text)
+        audio = client2.generate(text=cleaned,voice="Justin",model="eleven_turbo_v2")
 
         # Create single bytes object from the returned generator.
         data = b"".join(audio)
@@ -244,7 +245,8 @@ if user_prompt := st.chat_input("What is up?"):
 
         #ElevelLabs API Call and Return
         text = str(response['answer'])
-        audio = client2.generate(text=text, voice="Justin", model="eleven_turbo_v2")
+        cleaned = re.sub(r'\*.*?\*', '', text)
+        audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
         
 
         # Create single bytes object from the returned generator.
