@@ -8,6 +8,7 @@ from langchain_openai import OpenAI
 from langchain_openai import OpenAIEmbeddings
 from langchain.prompts import PromptTemplate
 from langchain_core.prompts import ChatPromptTemplate
+from langchain.retrievers import RePhraseQueryRetriever
 from langchain.chains import ConversationChain
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
