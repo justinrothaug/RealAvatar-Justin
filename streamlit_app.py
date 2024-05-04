@@ -78,7 +78,7 @@ with st.sidebar:
 # Define our Prompt for GPT
 GPT_prompt_template = """You are an assistant tasked with taking a natural languge query from a user
     and converting it using your fine-tuned language.
-    Here is the user query:
+    Here is the user query: {question}
 {context}
 """
 
