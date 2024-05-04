@@ -249,7 +249,7 @@ if user_prompt := st.chat_input("What is up?"):
         st.markdown(user_prompt)
     with st.chat_message("assistant", avatar=assistant_logo):
         message_placeholder = st.empty()
-        response2 = chain.invoke({"question": user_prompt})
+        response = chain.invoke({"question": user_prompt})
         output=llm_paraphrase_chain.predict(response['answer'])        
         message_placeholder.markdown('output')
 
