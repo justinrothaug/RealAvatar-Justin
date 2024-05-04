@@ -75,8 +75,10 @@ with st.sidebar:
       
 
 # Define our Prompt for GPT
-GPT_prompt_template = """You are a rephrase bot, you will rephrase the text you get, you will not output any opinion or anything else except the desired rephrase.
-Question: {question}
+GPT_prompt_template = """You are an assistant tasked with taking a natural languge query from a user
+    and converting it using your fine-tuned language.
+    Here is the user query: {question} """
+
 =========
 {context}
 =========
@@ -137,7 +139,8 @@ def get_chatassistant_chain_GPT_FT():
     vectorstore_GPT_FT = PineconeVectorStore(index_name="justinai", embedding=embeddings_model)
     set_debug(True)
     llm_GPT_FT = ChatOpenAI(model="ft:gpt-3.5-turbo-0125:personal::9HSIhY3I", temperature=0, frequency_penalty=2)
-    chain_GPT_FT=ConversationalRetrievalChain.from_llm(llm=llm_GPT_FT, retriever=vectorstore_GPT_FT.as_retriever(),memory=memory,combine_docs_chain_kwargs={"prompt": Prompt_GPT})
+    chain_GPT_FT = RePhraseQueryRetriever(retriever=vectorstore_GPT_FT.as_retriever(), llm=llm_GPT_FT)
+    #chain_GPT_FT=ConversationalRetrievalChain.from_llm(llm=llm_GPT_FT, retriever=vectorstore_GPT_FT.as_retriever(),memory=memory,combine_docs_chain_kwargs={"prompt": Prompt_GPT})
     return chain_GPT_FT
 chain_GPT_FT = get_chatassistant_chain_GPT_FT()
 
