@@ -76,6 +76,10 @@ with st.sidebar:
 
 # Define our Prompt for GPT
 GPT_prompt_template = """You are a rephrase bot, you will rephrase the text you get, you will not output any opinion or anything else except the desired rephrase.
+Question: {question}
+=========
+{context}
+=========
 """
 
 
