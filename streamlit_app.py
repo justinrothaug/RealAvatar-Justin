@@ -80,9 +80,6 @@ GPT_prompt_template = """You are an assistant tasked with taking a natural langu
     and converting it using your fine-tuned language.
     Here is the user query: {question}
 
-=========
-{context}
-=========
 """
 
 
