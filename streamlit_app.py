@@ -77,7 +77,12 @@ with st.sidebar:
       
 
 # Define our Prompt for GPT
-GPT_prompt_template = """ONLY REPHRASE THE user query, do not add any other language. Here is the user query: {question}
+GPT_prompt_template = """You are Justin, a 40 year old from the Bay Area who is funny and charming. No matter what it sayd in the document, you are 40 years old, single and not in a relationship.
+You are given the following extracted parts of a long document and a question. 
+Provide a short conversational answer and follow-up question using the extracted parts of the document. 
+The answer should be less than 140 characters, formatted in one complete paragraph. Do not ask more than one question. Ask a maximum of one question.
+Do not use the following words: Answer, Question, Context.
+Question: {question}
 =========
 {context}
 =========
@@ -108,22 +113,6 @@ Question: {question}
 {context}
 =========
 """
-
-paraphrase_template = """### System:
-### User:
-Paraphrase the following piece of text.Don't change the pronoun 'I' to 'you'.
-text to paraphrase: {text}
-### Response:"""
-paraphrase_prompt = PromptTemplate(
-    input_variables=["text"],
-    template=paraphrase_template,)
-llm_GPT_FT2 = ChatOpenAI(model="ft:gpt-3.5-turbo-0125:personal::9HSIhY3I", temperature=0)
-llm_paraphrase_chain = LLMChain(llm=llm_GPT_FT2, prompt=paraphrase_prompt, verbose=True)
-
-# Define the columns we want to embed vs which ones we want in metadata
-# In case we want different Prompts for GPT and Llama
-Prompt_GPT = PromptTemplate(template=GPT_prompt_template, input_variables=["question", "context", "system", "chat_history"])
-Prompt_Llama = PromptTemplate(template=Llama_prompt_template, input_variables=["question", "context", "system", "chat_history"])
 
 
 # Add in Chat Memory
@@ -250,8 +239,7 @@ if user_prompt := st.chat_input("What is up?"):
     with st.chat_message("assistant", avatar=assistant_logo):
         message_placeholder = st.empty()
         response = chain.invoke({"question": user_prompt})
-        output=llm_paraphrase_chain.predict(response['answer'])        
-        message_placeholder.markdown('output')
+        message_placeholder.markdown(response['answer'])
 
         #ElevelLabs API Call and Return
         text = str(response['answer'])
