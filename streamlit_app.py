@@ -108,6 +108,15 @@ Question: {question}
 =========
 """
 
+paraphrase_template = """### System:
+### User:
+Paraphrase the following piece of text.Don't change the pronoun 'I' to 'you'.
+text to paraphrase: {text}
+### Response:"""
+paraphrase_prompt = PromptTemplate(
+    input_variables=["text"],
+    template=paraphrase_template,)
+llm_paraphrase_chain = LLMChain(llm=llm, prompt=paraphrase_prompt, verbose=True)
 
 
 # Define the columns we want to embed vs which ones we want in metadata
@@ -140,6 +149,10 @@ def get_chatassistant_chain_GPT_FT():
     #chain_GPT_FT=ConversationalRetrievalChain.from_llm(llm=llm_GPT_FT, retriever=vectorstore_GPT_FT.as_retriever(),combine_docs_chain_kwargs={"prompt": Prompt_GPT})
     return chain_GPT_FT
 chain_GPT_FT = get_chatassistant_chain_GPT_FT()
+
+
+
+llm_paraphrase_chain = LLMChain(llm=llm, prompt=paraphrase_prompt, verbose=True)
 
 #Claude
 def get_chatassistant_chain(): 
@@ -239,8 +252,8 @@ if user_prompt := st.chat_input("What is up?"):
     with st.chat_message("assistant", avatar=assistant_logo):
         message_placeholder = st.empty()
         response2 = chain.invoke({"question": user_prompt})
-        response = chain2.invoke({"question": response2['answer']})         
-        message_placeholder.markdown(response['answer'])
+        output=llm_paraphrase_chain.predict(text=response['answer'])        
+        message_placeholder.markdown('output')
 
         #ElevelLabs API Call and Return
         text = str(response['answer'])
