@@ -242,7 +242,8 @@ if user_prompt := st.chat_input("What is up?"):
         st.markdown(user_prompt)
     with st.chat_message("assistant", avatar=assistant_logo):
         message_placeholder = st.empty()
-        response = chain.invoke({"question": user_prompt})
+        response2 = chain.invoke({"question": user_prompt})
+        response = chain.invoke({"question": response2['answer']})         
         message_placeholder.markdown(response['answer'])
 
         #ElevelLabs API Call and Return
