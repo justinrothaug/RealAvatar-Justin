@@ -125,7 +125,7 @@ def get_chatassistant_chain_GPT():
     vectorstore_GPT = PineconeVectorStore(index_name="justinai", embedding=embeddings_model)
     set_debug(True)
     llm_GPT = ChatOpenAI(model="gpt-4-turbo", temperature=1)
-    chain_GPT=ConversationalRetrievalChain.from_llm(llm=llm_GPT,retriever=vectorstore_GPT_FT.as_retriever(),combine_docs_chain_kwargs={"prompt": Prompt_GPT})
+    chain_GPT=ConversationalRetrievalChain.from_llm(llm=llm_GPT,retriever=vectorstore_GPT.as_retriever(),combine_docs_chain_kwargs={"prompt": Prompt_GPT})
     return chain_GPT
 chain_GPT = get_chatassistant_chain_GPT()
 
