@@ -122,10 +122,10 @@ memory=ConversationBufferMemory(memory_key="chat_history", chat_memory=msgs, ret
 #chatGPT
 def get_chatassistant_chain_GPT():
     embeddings_model = OpenAIEmbeddings()
-    vectorstore_GPT = PineconeVectorStore(index_name="justinai", embedding=embeddings_model)
+    #vectorstore_GPT = PineconeVectorStore(index_name="justinai", embedding=embeddings_model)
     set_debug(True)
     llm_GPT = ChatOpenAI(model="gpt-4-turbo", temperature=1)
-    chain_GPT=ConversationalRetrievalChain.from_llm(llm=llm_GPT, retriever=vectorstore_GPT.as_retriever(),memory=memory,combine_docs_chain_kwargs={"prompt": Prompt_GPT})
+    chain_GPT=ConversationalRetrievalChain.from_llm(llm=llm_GPT,combine_docs_chain_kwargs={"prompt": Prompt_GPT})
     return chain_GPT
 chain_GPT = get_chatassistant_chain_GPT()
 
