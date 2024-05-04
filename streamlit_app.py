@@ -114,7 +114,7 @@ Question: {question}
 
 # Define the columns we want to embed vs which ones we want in metadata
 # In case we want different Prompts for GPT and Llama
-Prompt_GPT = PromptTemplate(template=GPT_prompt_template, input_variables=["question"])
+Prompt_GPT = PromptTemplate(template=GPT_prompt_template, input_variables=["question", "context", "system", "chat_history"])
 Prompt_Llama = PromptTemplate(template=Llama_prompt_template, input_variables=["question", "context", "system", "chat_history"])
 
 
