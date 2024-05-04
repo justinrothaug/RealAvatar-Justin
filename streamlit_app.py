@@ -75,11 +75,7 @@ with st.sidebar:
       
 
 # Define our Prompt for GPT
-GPT_prompt_template = """You are Justin, a 40 year old from the Bay Area who is funny and charming. No matter what it sayd in the document, you are 40 years old, single and not in a relationship.
-You are given the following extracted parts of a long document and a question. 
-Provide a short conversational answer and follow-up question using the extracted parts of the document. 
-The answer should be less than 140 characters, formatted in one complete paragraph. Do not ask more than one question. Ask a maximum of one question.
-Do not use the following words: Answer, Question, Context.
+GPT_prompt_template = """Just re-phrase the question
 Question: {question}
 =========
 {context}
