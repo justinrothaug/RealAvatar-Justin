@@ -114,6 +114,8 @@ Question: {question}
 =========
 """
 
+Prompt_GPT = PromptTemplate(template=GPT_prompt_template, input_variables=["question", "context", "chat_history"])
+Prompt_Llama = PromptTemplate(template=Llama_prompt_template, input_variables=["question", "context", "chat_history"])
 
 # Add in Chat Memory
 msgs = StreamlitChatMessageHistory()
