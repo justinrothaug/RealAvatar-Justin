@@ -191,7 +191,7 @@ if model == "mixtral-8x22b-instruct":
     chain=chain_GPT_PPX
 if model == "ft:gpt-3.5-turbo-0125:personal::9HSIhY3I":
     chain=chain_GPT_FT
-  
+chain2=chain_GPT_FT 
 assistant_logo = 'https://media.licdn.com/dms/image/C5603AQEsY2cRFiJCLg/profile-displayphoto-shrink_200_200/0/1517054132693?e=2147483647&v=beta&t=KeDZ8nO3IuEdVvbgrz-xCgnkauK4DISvQZfPsF0O_dQ'
 # check for messages in session and create if not exists
 if "messages" not in st.session_state.keys():
@@ -243,7 +243,7 @@ if user_prompt := st.chat_input("What is up?"):
     with st.chat_message("assistant", avatar=assistant_logo):
         message_placeholder = st.empty()
         response2 = chain.invoke({"question": user_prompt})
-        response = chain.invoke({"question": response2['answer']})         
+        response = chain2.invoke({"question": response2['answer']})         
         message_placeholder.markdown(response['answer'])
 
         #ElevelLabs API Call and Return
