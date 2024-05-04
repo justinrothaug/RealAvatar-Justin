@@ -117,8 +117,8 @@ text to paraphrase: {text}
 paraphrase_prompt = PromptTemplate(
     input_variables=["text"],
     template=paraphrase_template,)
-llm_paraphrase_chain = LLMChain(llm=llm, prompt=paraphrase_prompt, verbose=True)
-
+llm_paraphrase_chain = LLMChain(llm=llm_GPT_FT2, prompt=paraphrase_prompt, verbose=True)
+llm_GPT_FT2 = ChatOpenAI(model="ft:gpt-3.5-turbo-0125:personal::9HSIhY3I", temperature=0)
 
 # Define the columns we want to embed vs which ones we want in metadata
 # In case we want different Prompts for GPT and Llama
@@ -151,9 +151,6 @@ def get_chatassistant_chain_GPT_FT():
     return chain_GPT_FT
 chain_GPT_FT = get_chatassistant_chain_GPT_FT()
 
-
-
-llm_paraphrase_chain = LLMChain(llm=llm, prompt=paraphrase_prompt, verbose=True)
 
 #Claude
 def get_chatassistant_chain(): 
