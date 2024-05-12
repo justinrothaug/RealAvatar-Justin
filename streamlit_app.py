@@ -57,10 +57,10 @@ PPLX_API_KEY= os.environ['PPLX_API_KEY']
 video_html = """
 <video controls autoplay="true" muted="true" loop="true">
 <source 
-            src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_e103ea6195a27be25c6379fa1e36a4a9.mp4" 
+            src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" 
             type="video/mp4" />
 </video>"""
-
+#https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4
 
 # Sidebar to select LLM
 with st.sidebar:   
