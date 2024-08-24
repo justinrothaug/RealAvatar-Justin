@@ -50,10 +50,10 @@ from langchain.prompts.chat import (ChatPromptTemplate,SystemMessagePromptTempla
 from langchain.chains import LLMChain, ConversationChain
 from langchain_groq import ChatGroq
 #Webcam
-from streamlit_webrtc import webrtc_streamer, VideoHTMLAttributes
-import cv2
-import numpy as np
-import av
+#from streamlit_webrtc import webrtc_streamer, VideoHTMLAttributes
+#import cv2
+#import numpy as np
+#import av
 # Importing Google Vertex --Disabled
 #from langchain_google_vertexai import VertexAIModelGarden
 #from langchain_google_vertexai import VertexAI
@@ -93,23 +93,23 @@ st.set_page_config(page_title="JustinAI")
 assistant_logo = 'https://chorus.fm/wp-content/uploads/2016/06/ringer.jpg'
 
 #Set up the Zoom and Video Filters
-from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
-RTC_CONFIGURATION = RTCConfiguration({"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
-filter = "none"
-def transform(frame: av.VideoFrame):
-    img = frame.to_ndarray(format="bgr24")  
-    if filter == "grayscale":
-        img = cv2.cvtColor(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), cv2.COLOR_GRAY2BGR)
-    elif filter == "canny":
-        img = cv2.cvtColor(cv2.Canny(img, 200, 300), cv2.COLOR_GRAY2BGR)
-    elif filter == "sepia":
-        kernel = np.array([[0.272, 0.534, 0.131], [0.349, 0.686, 0.168], [0.393, 0.769, 0.189]])
-        img = cv2.transform(img, kernel)
-    elif filter == "cartoon":
-        img = cv2.cvtColor(cv2.cvtColor(img, cv2.COLOR_BGR2HSV), cv2.COLOR_BGR2HSV)
-    elif filter == "none":
-        pass
-    return av.VideoFrame.from_ndarray(img, format="bgr24")
+#from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
+#RTC_CONFIGURATION = RTCConfiguration({"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
+#filter = "none"
+#def transform(frame: av.VideoFrame):
+#    img = frame.to_ndarray(format="bgr24")  
+#    if filter == "grayscale":
+#        img = cv2.cvtColor(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), cv2.COLOR_GRAY2BGR)
+#    elif filter == "canny":
+#        img = cv2.cvtColor(cv2.Canny(img, 200, 300), cv2.COLOR_GRAY2BGR)
+#    elif filter == "sepia":
+#        kernel = np.array([[0.272, 0.534, 0.131], [0.349, 0.686, 0.168], [0.393, 0.769, 0.189]])
+#        img = cv2.transform(img, kernel)
+#    elif filter == "cartoon":
+#        img = cv2.cvtColor(cv2.cvtColor(img, cv2.COLOR_BGR2HSV), cv2.COLOR_BGR2HSV)
+#    elif filter == "none":
+#        pass
+#    return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 #from openai import OpenAI
 #import pyaudio, wave, keyboard, faster_whisper, torch.cuda, os
@@ -210,8 +210,8 @@ with st.sidebar:
             #introduction = st.toggle("Intro (Justin Only)", value=False)
             #TTS = st.selectbox('What TTS would you like to use?',('Elevenlabs', 'Speechlab'))
     with tab3:
-            filter = st.selectbox('Video Chat Filter',('none', 'grayscale', 'canny', 'sepia', 'cartoon'))
-            webrtc_ctx = webrtc_streamer(key="WYH",mode=WebRtcMode.SENDRECV,rtc_configuration=RTC_CONFIGURATION,media_stream_constraints={"video": True, "audio": False},async_processing=False, video_frame_callback=transform)
+#            filter = st.selectbox('Video Chat Filter',('none', 'grayscale', 'canny', 'sepia', 'cartoon'))
+#            webrtc_ctx = webrtc_streamer(key="WYH",mode=WebRtcMode.SENDRECV,rtc_configuration=RTC_CONFIGURATION,media_stream_constraints={"video": True, "audio": False},async_processing=False, video_frame_callback=transform)
     if talent2=="None":
         st.image("https://gae1.realavatar.ai/images/logo-long.png")
 
