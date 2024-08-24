@@ -209,7 +209,7 @@ with st.sidebar:
 
             #introduction = st.toggle("Intro (Justin Only)", value=False)
             #TTS = st.selectbox('What TTS would you like to use?',('Elevenlabs', 'Speechlab'))
-    with tab3:
+#    with tab3:
 #            filter = st.selectbox('Video Chat Filter',('none', 'grayscale', 'canny', 'sepia', 'cartoon'))
 #            webrtc_ctx = webrtc_streamer(key="WYH",mode=WebRtcMode.SENDRECV,rtc_configuration=RTC_CONFIGURATION,media_stream_constraints={"video": True, "audio": False},async_processing=False, video_frame_callback=transform)
     if talent2=="None":
