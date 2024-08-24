@@ -15,6 +15,7 @@ pygame
 pydub
 langchain_groq
 streamlit_webrtc
+opencv-python
 
 #Depricated
 #dvc
