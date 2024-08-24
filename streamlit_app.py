@@ -152,9 +152,9 @@ def ClearChat():
         if talent == "grimes":
             video = st.empty()
             video_html=video_html_grimes
-        if talent == "Ronaldo":
+        if talent == "Justin Age 12":
             video = st.empty()
-            video_html=video_html_ronaldo
+            video_html=video_html_justinage12
         if talent == "Luka Doncic": 
             video = st.empty()
             video_html=video_html_luka 
@@ -174,9 +174,9 @@ def ClearChat():
         if talent2 == "grimes":
             video = st.empty()
             video_html2=video_html_grimes
-        if talent2 == "Ronaldo":
+        if talent2 == "Justin Age 12":
             video = st.empty()
-            video_html2=video_html_ronaldo
+            video_html2=video_html_justinage12
         if talent2 == "Luka Doncic": 
             video = st.empty()
             video_html2=video_html_luka 
