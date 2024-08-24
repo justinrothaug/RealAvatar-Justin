@@ -2073,16 +2073,3 @@ else:
                         responsequestion = questionchain.run(cleaned)
                         st.warning("Follow-Up Suggestions:  \n"+responsequestion) 
                 st.session_state.messages.append({"role": "assistant", "content": response['answer']})
-
-
-
-
-#Show the Feedback UI
-###########################################################################################################     
-feedback_key = f"feedback_{int(2)}"
-if feedback_key not in st.session_state:
-    st.session_state[feedback_key] = None
-def handle_feedback(user_response, emoji=None):
-    st.session_state.messages.append(f"Feedback submitted: {user_response}", icon=emoji)
-    st.toast("✔️ Feedback received!")
-feedback = streamlit_feedback(feedback_type="thumbs",optional_text_label="Please provide an explanation")
