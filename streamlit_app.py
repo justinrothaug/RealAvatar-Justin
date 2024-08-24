@@ -2056,10 +2056,8 @@ else:
                 if audioonly:
                     #ElevelLabs API Call and Return
                     if talent == "Justin":
-                        audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_e103ea6195a27be25c6379fa1e36a4a9.mp4" }
+                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                     if talent == "Justin Age 12":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" } 
                         audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                     #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
                     # Create single bytes object from the returned generator.
