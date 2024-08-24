@@ -38,7 +38,7 @@ from os import path
 from pydub import AudioSegment 
 import subprocess
 import time
-from streamlit_feedback import streamlit_feedback
+#from streamlit_feedback import streamlit_feedback
 import requests
 import streamlit.components.v1 as components
 #Question Lists
