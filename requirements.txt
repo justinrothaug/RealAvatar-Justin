@@ -16,7 +16,6 @@ pydub
 langchain_groq
 streamlit_webrtc
 opencv-python
-cv2
 
 #Depricated
 #dvc
