@@ -2362,7 +2362,7 @@ if on:
                         #Generate the 2nd MP4 while the 1st is playing             
 
                         #Define the ElevenLabs Voice Name and Idle MP4 from Ex-Human for each Talent
-                        if talent == "Justin"                       
+                        if talent == "Justin":                       
                             audio2=client2.generate(text=lastName, voice='Justin', model="eleven_turbo_v2")
                         if talent == "Justin Age 12":
                             audio2=client2.generate(text=lastName, voice='Justin', model="eleven_turbo_v2")
