@@ -16,7 +16,8 @@ pydub
 langchain_groq
 streamlit_webrtc
 opencv-python
-
+streamlit_option_menu
+streamlit-extras
 #Depricated
 #dvc
 #dvc-s3
