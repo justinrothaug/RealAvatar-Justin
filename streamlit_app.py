@@ -290,15 +290,15 @@ def StartConvo():
         st.session_state.messages.append({"role": talent, "content": user_prompt})
         #IF Video/Audio are ON
         if on:
-            if talent == "Andrew Ng":
+            if talent == "Justin Age 5":
                 payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4" }
-                audio=client2.generate(text=multichain, voice='AndrewPro', model="eleven_turbo_v2")                              
+                audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")
             if talent == "Justin":
                 payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" } 
-                audio=client2.generate(text=multichain, voice='Steph', model="eleven_turbo_v2")
-            if talent == "Grimes":
+                audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")
+            if talent == "Justin Age 12":
                 payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
-                audio=client2.generate(text=multichain,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
+                audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")
             if talent == "Steph Curry":
                 audio=client2.generate(text=multichain, voice='Steph', model="eleven_turbo_v2")
                 payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
