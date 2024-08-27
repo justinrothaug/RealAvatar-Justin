@@ -78,7 +78,6 @@ load_dotenv(override=True)
 CLAUDE_API_KEY= os.environ['CLAUDE_API_KEY']
 api_key= os.environ['CLAUDE_API_KEY']
 PINECONE_API_KEY= os.environ['PINECONE_API_KEY']
-REPLICATE_API_TOKEN= os.environ['REPLICATE_API_TOKEN']
 OPENAI_API_KEY= os.environ["OPENAI_API_KEY"]
 client= OpenAI(api_key= os.environ["OPENAI_API_KEY"])
 chat= ChatOpenAI(openai_api_key= os.environ["OPENAI_API_KEY"])
@@ -87,6 +86,11 @@ client2= ElevenLabs(api_key= os.environ["ELEVEN_LABS_API_KEY"])
 PPLX_API_KEY= os.environ['PPLX_API_KEY']
 GROQ_API_KEY=os.environ['GROQ_API_KEY']
 
+#Add LangSmith Debug
+#os.environ["LANGCHAIN_TRACING_V2"]="true"
+#os.environ["LANGCHAIN_ENDPOINT"]="https://api.smith.langchain.com"
+#os.environ["LANGCHAIN_API_KEY"]="ls__f58fcca57d5b430998efab563129b779"
+#os.environ["LANGCHAIN_PROJECT"]="pt-uncommon-nexus-100"
 
 #Set up the Environment
 st.set_page_config(page_title="JustinAI")
@@ -119,6 +123,16 @@ assistant_logo = 'https://chorus.fm/wp-content/uploads/2016/06/ringer.jpg'
 #openai_client = OpenAI(api_key= os.environ["OPENAI_API_KEY"])
 #elevenlabs_client = os.environ["ELEVEN_LABS_API_KEY"]
 
+st.markdown("""
+        <style>
+               .block-container {
+                    padding-top: 0rem;
+                    padding-bottom: 0rem;
+                    padding-left: 0rem;
+                    padding-right: 0rem;
+                }
+        </style>
+        """, unsafe_allow_html=True)
 
 #############################################################################################################################
 # Menu Options
@@ -133,18 +147,6 @@ def ClearChat():
     st.session_state.messages = []
     st.session_state.msgs = []
     st.session_state.keys = []
-    if intro:
-        with st.sidebar:   
-            video.empty()  # optionally delete the element afterwards   
-            html_string = """
-                <video autoplay video width="400">
-                <source src="http://localhost:1180/Outputintro.mp4" type="video/mp4">
-                </video>
-                """         
-            video = st.empty()
-            video.markdown(html_string, unsafe_allow_html=True)
-            time.sleep(25)
-            video.empty()
     with st.sidebar:  
         if talent == "Justin":
             video = st.empty()
@@ -189,32 +191,192 @@ def ClearChat():
         if talent2 == "Sofia Vergara":
             video = st.empty()
             video_html2=video_html_sofia
+#############################################################################################################################
+#Agent to Start the Conversation (Introduction, News, or Generic
+#############################################################################################################################
+
+def StartConvo():
+    if introduction:       
+        st.session_state.messages = [{"role": "assistant", "content": "Hello there, this is the Real Avatar of Andrew NG. You're not speaking directly to Andrew, but a digital representation that has been trained on Andrew's writing. What would you like to discuss today?"}]    
+        with st.sidebar:   
+            video.empty()  # optionally delete the element afterwards   
+            html_string = """
+                <video autoplay video width="400">
+                <source src="http://34.133.91.213:8000/Output22.mp4" type="video/mp4">
+                </video>
+                """         
+            lipsync = st.empty()
+            lipsync.markdown(html_string, unsafe_allow_html=True)
+            time.sleep(25)
+            lipsync.empty()
+            video.markdown(video_html, unsafe_allow_html=True)
     if intro:
         st.session_state.messages = [{"role": "assistant", "content": responsequestionintro}]
+        with st.sidebar:   
+            video.empty()  # optionally delete the element afterwards   
+            html_string = """
+                <video autoplay video width="400">
+                <source src="http://localhost:1180/Outputintro.mp4" type="video/mp4">
+                </video>
+                """         
+            lipsync = st.empty()
+            lipsync.markdown(html_string, unsafe_allow_html=True)
+            time.sleep(25)
+            lipsync.empty()
+            video.markdown(video_html, unsafe_allow_html=True)
+            
+    if not introduction and not intro:   
+        if str(msgs) != '':
+            multi_question_template = """
+            You'd like to continue the previous conversation after a brief lull (maybe you had to step away for a minute).
+            Try to talk about something new but related to the current topic in the previous message..maybe your favorite topic or one of similar interests.
+            If it comes up odd, just keep talking about the current topic (in the last message). Maybe ask a follow-up question or continue the line of thought"
+
+            |About The User|
+            - The User has described themselves in the Profile attached below. Take note of any details like Name, Age, Occuptaion or Interests, and incorperate them in your response if applicable
+            - Address the User as their Name if it was provided.
+            
+            It is important to KEEP IT SHORT. Keep it short less than 80-100 tokens long.
+            """
+        if str(msgs) == '':
+            multi_question_template = """
+            The User has just come up to talk to you, determine your introduction dialog to this chat. 
+            Roll the dice, and if it comes up even talk about one of the news topics related to your favorite topic or one of your interests.
+            If it comes up odd, just say a generic introduction like "How are you doing today?"
+
+            |About The User|
+            - The User has described themselves in the Profile attached below. Take note of any details like Name, Age, Occuptaion or Interests, and incorperate them in your response if applicable
+            - Address the User as their Name if it was provided.
+            
+            It is important to KEEP IT SHORT. Keep it short less than 80-100 tokens long.
+            """ 
+        if mode == "Roleplay":
+            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+character+card+profile)
+        else:
+            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+character+profile)
+        human_message_prompt = HumanMessagePromptTemplate.from_template("{text}")
+        chat_prompt2 = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+        def get_chatassistant_multichain():
+            multichain = LLMChain(
+                llm=ChatPerplexity(model="llama-3.1-sonar-huge-128k-online", temperature=1),prompt=chat_prompt2,verbose=True)
+            return multichain
+        multichain = get_chatassistant_multichain()   
+
+        if str(msgs) != '':  
+            multichain = multichain.run(msgs) 
+        #context = msgs
+        if str(msgs) == '':
+            if talent == "Andrew Ng":
+                multichain = multichain.run("AI")
+            if talent == "Justin":
+                multichain = multichain.run("sports")
+            if talent == "Grimes":
+                multichain = multichain.run("grimes")
+            if talent == "Steph Curry":
+                multichain = multichain.run("basketball")
+            if talent == "Andre Iguodala":
+                multichain = multichain.run("basketball")
+            if talent == "Sofia Vergara":
+                multichain = multichain.run("sofia vergara")
+            if talent == "Draymond Green":
+                multichain = multichain.run("basketball")
+            if talent == "Luka Doncic":
+                multichain = multichain.run("basketball")
+
+        user_text = multichain
+        user_prompt = str(user_text)
+
+        st.chat_message(talent).markdown(user_prompt)
+        st.session_state.messages.append({"role": talent, "content": user_prompt})
+        #IF Video/Audio are ON
+        if on:
+            if talent == "Andrew Ng":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4" }
+                audio=client2.generate(text=multichain, voice='AndrewPro', model="eleven_turbo_v2")                              
+            if talent == "Ronaldo":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f6ab107ab97da5cefd33b812e9a72caa.mp4" } 
+                audio=client2.generate(text=multichain, voice='Steph', model="eleven_turbo_v2")
+            if talent == "Grimes":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" }
+                audio=client2.generate(text=multichain,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
+            if talent == "Steph Curry":
+                audio=client2.generate(text=multichain, voice='Steph', model="eleven_turbo_v2")
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
+            if talent == "Andre Iguodala":
+                audio=client2.generate(text=multichain,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d496b8cd93b3d0b631a7b211aa233771.mp4" }
+            if talent == "Sofia Vergara":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d95182839da7c8c061d37fc7df72bb7a.mp4" }
+                audio=client2.generate(text=multichain,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+            if talent == "Draymond Green":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_9d82a467b223af553b18f18c9ce33e38.mp4" }
+                audio=client2.generate(text=multichain,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+            if talent == "Luka Doncic":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_ef1310293e63a6496d9a396bb45cb973.mp4" }
+                audio=client2.generate(text=multichain,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")
+            path='//home//ubuntu//source//pocdemo//'
+            audio = audio
+            save(audio, path+'OutputChar2.mp3')
+            sound = AudioSegment.from_mp3(path+'OutputChar2.mp3') 
+            song_intro = sound[:30000]
+            song_intro.export(path+'OutputChar2.mp3', format="mp3")  
+            url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
+            files = { "audio_file": (path+"OutputChar2.mp3", open(path+"OutputChar2.mp3", "rb"), "audio/mp3") }
+            headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
+            lipsync = requests.post(url, data=payload, files=files, headers=headers)
+            path_to_response = path+"OutputChar2.mp4"  # Specify the path to save the video response                    path_to_response = path+"Output.mp4"  # Specify the path to save the video response               
+            with open(path_to_response, "wb") as f:
+                f.write(lipsync.content)
+            import cv2 as cv
+            vidcapture = cv.VideoCapture('http://34.133.91.213:8000/OutputChar2.mp4')
+            fps = vidcapture.get(cv.CAP_PROP_FPS)
+            totalNoFrames = vidcapture.get(cv.CAP_PROP_FRAME_COUNT)  
+            durationInSeconds = totalNoFrames / fps    
+            with st.sidebar: 
+                video.empty() 
+                video.empty()
+                html_string3 = """
+                    <video autoplay video width="400">
+                    <source src="http://34.133.91.213:8000/OutputChar2.mp4" type="video/mp4">
+                    </video>
+                    """
+                video.empty()
+                video.markdown(html_string3, unsafe_allow_html=True)
+                time.sleep(durationInSeconds)
+            video.empty()
+            video.markdown(video_html, unsafe_allow_html=True)       
+            if os.path.isfile(path+'OutputChar2.mp4'):
+                os.remove(path+'OutputChar2.mp4')    
+        #Write the Text Message
 
 # Sidebar Tab 2 and 3 - Tab 2 has the Main Settings, and Tab 3 has the "Zoom" Video Chat
+talent2 = "None"
 with st.sidebar:
-    tab1, tab3, tab2 = st.tabs(["Chat","Zoom","Settings"])
+    tab1, tab3, tab2, tab4 = st.tabs(["Chat","Zoom","Settings", "Profile"])
+    with tab1:
+            talent = st.selectbox('*Press Clear Chat After Switching*',('Justin', 'Justin Age 12'))
     with tab2:
-            talent = st.selectbox('What model would you like to use? (Clear Chat after switch)',('Justin', 'Justin Age 12'))
-            mode = st.selectbox('What mode would you like to use?',('Normal', 'Roleplay'))
-            talent2 = st.selectbox('Multi-Character Chat',('None', 'Justin', 'Justin Age 12'))
-            st.button('Clear Chat', on_click=ClearChat, key = "123")
-            on = st.toggle("Video + Audio", value=False)
+            st.button('Clear Chat', on_click=ClearChat, key = "123", use_container_width=True)
+            on = st.toggle("Video + Audio", value=True)
+            multichat = st.toggle("Add Second Character", value=False)
             sync = st.toggle("Sync Text with A/V", value=False)
-            audioonly = st.toggle("Audio Only", value=True)
             VideoHack = st.toggle("Ex-Human Stream Hack", value=False)
-            #Thinking = st.toggle("Thinking Animation Test", value=False)
-            intro = st.toggle("Daily News (Press Clear Chat to Force Play)", value=False)
+            Thinking = st.toggle("Thinking Animation Test", value=False)
+            audioonly = st.toggle("Audio Only", value=True)
+            intro = st.toggle("Intro - Automatic", value=False)
+            introduction = st.toggle("Intro - Pre-Written (Andrew)", value=False)
+            TTS = st.selectbox('What TTS would you like to use?',('Elevenlabs', 'Speechlab'))
+            mode = st.selectbox('What mode would you like to use?',('Normal', 'Roleplay'),key='search_1')
+    with tab1:
+        if multichat:
+            talent2 = st.selectbox('Add Second Character',('Draymond Green', 'Andrew Ng', 'Andre Iguodala', 'Grimes', 'Luka Doncic', 'Ronaldo','Sofia Vergara','Steph Curry'))
 
-            #introduction = st.toggle("Intro (Justin Only)", value=False)
-            #TTS = st.selectbox('What TTS would you like to use?',('Elevenlabs', 'Speechlab'))
-#    with tab3:
-#            filter = st.selectbox('Video Chat Filter',('none', 'grayscale', 'canny', 'sepia', 'cartoon'))
-#            webrtc_ctx = webrtc_streamer(key="WYH",mode=WebRtcMode.SENDRECV,rtc_configuration=RTC_CONFIGURATION,media_stream_constraints={"video": True, "audio": False},async_processing=False, video_frame_callback=transform)
-    if talent2=="None":
-        st.image("https://gae1.realavatar.ai/images/logo-long.png")
-
+    with tab3:
+            filter = st.selectbox('Video Chat Filter',('none', 'grayscale', 'canny', 'sepia', 'cartoon'))
+            webrtc_ctx = webrtc_streamer(key="WYH",mode=WebRtcMode.SENDRECV,rtc_configuration=RTC_CONFIGURATION,media_stream_constraints={"video": True, "audio": False},async_processing=False, video_frame_callback=transform)
+    with tab4:
+        userinput = st.text_area("Enter Your Profile 👇", key="5", value = "User has not entered any information, use a generic profile")
+        profile=userinput
 
 # News Agent. This calls Perplexity's online model and gathers current news items.
 #############################################################################################################################
@@ -353,93 +515,106 @@ if intro:
 #############################################################################################################################
 
 #Initialize a few things: Chat History, Scenario, Header
+from streamlit_option_menu import option_menu
+
 msgs = StreamlitChatMessageHistory()
 scenario="Random"
+scenario2="<Left Column"
 header = st.container()
 if talent2=="None":
     header.title(talent)
 else:
     header.title(talent+" & "+talent2)
 
+def on_change(key):
+    selection = st.session_state[key]
+    if selection == "Chat":
+        st.session_state['mode'] = "Normal"
+        st.session_state.search_1 = "Normal"
+    if selection == "Roleplay":
+        st.session_state['mode'] = "Roleplay"
+        st.session_state.search_1 = "Roleplay"
 #############################################################################################################################
 ##DROPDOWN MENUS
 #############################################################################################################################
 # If Roleplay and Mood are Turned On
-col1, col2, col3 = st.columns([0.4, 0.3, .3])
-with header:       
+with header:
+        selected2 = option_menu(None, ["Chat", "Roleplay"],on_change=on_change, key='menu_5', orientation="horizontal")
+
         if mode == "Roleplay":
+            col1, col2 = st.columns([0.68, .32])
             with col1:
-                with header.popover("Roleplay Scenario", use_container_width=True):
-                    col1, col2 = st.columns(2)
-
-                    with col1:
-                        scenario = st.radio('Roleplay Mood or Location',('Friend','Happy','Sad', 'Interview', 'Podcast', 'Gym','Teammate', 'Cooking_Show', 'Custom_Time_Travel'), 
-                                            captions = ("You're catching up with a great friend", "They're in the best mood", "They're really sad, cheer them up!", "You're the interviewer, ask questions!", "You are a guest on their podcast/show ", "You just caught them in the gym", "You're the new teammate, introduce yourself!", "They're the host of a cooking show", "Time Travel to the Year ____ (enter any year)"))
-                        text_input2 = st.text_input(
-                            "Enter some text 👇", key="1")
-                    with col2:
-                        scenario2 = st.radio('Roleplay Scenario (Overrides Left Column)',('<Left Column','Zombie', 'Island', 'Memory', 'Murder_Mystery', 'Cyberpunk', 'Shakespeare', 'Rapper', 'Comedian', 'Custom'), 
-                                            captions = ("", "You've escaped a horde of zombies", "You find yourself stranded on a deserted island", "They've lost all memories and sense of self", "Help solve the case of who did it", "It's the future! Year 3000 cyberpunk", "They're speaking in a Shakespeare style", "You're now a world-famous rapper", "You're now a world-famous comedian", "Format-- Location:    Scenario:   Feelings:   Goals:  "" "))
-                        text_input = st.text_input(
-                            "Enter some text 👇", key="4")
+                with st.popover("Change Scenario", use_container_width=True):
+                    if talent == "Andrew Ng":
+                        scenario = st.radio('Roleplay Mood or Location',('Classroom_Week_1','Classroom_Week_2', 'Classroom_Week_3', 'Friend','Happy','Sad', 'Interview', 'Podcast', 'Zombie', 'Island', 'Memory', 'Murder_Mystery', 'Cyberpunk', 'Shakespeare', 'Rapper', 'Comedian', 'Custom_Time_Travel', 'Custom'), 
+                                            captions = ("Week 1: Introduction to Artificial Intelligence", "Week 2: Machine Learning Basics", "Week 3: Neural Networks and Deep Learning", "You're catching up with a great friend", "They're in the best mood", "They're really sad, cheer them up!", "You're the interviewer, ask questions!", "You are a guest on their podcast/show ", "You've escaped a horde of zombies", "You find yourself stranded on a deserted island", "They've lost all memories and sense of self", "Help solve the case of who did it", "It's the future! Year 3000 cyberpunk", "They're speaking in a Shakespeare style", "You're now a world-famous rapper", "You're now a world-famous comedian", "Time Travel to the Year ____ (enter any year)", "Format-- Location:    Scenario:   Feelings:   Goals:  "" "))
+                    else:
+                        scenario = st.radio('Roleplay Mood or Location',('Friend','Happy','Sad', 'Interview', 'Podcast', 'Gym','Teammate', 'Cooking_Show', 'Zombie', 'Island', 'Memory', 'Murder_Mystery', 'Cyberpunk', 'Shakespeare', 'Rapper', 'Comedian', 'Custom_Time_Travel', 'Custom_Time_Travel', 'Custom'), 
+                                            captions = ("You're catching up with a great friend", "They're in the best mood", "They're really sad, cheer them up!", "You're the interviewer, ask questions!", "You are a guest on their podcast/show ", "You just caught them in the gym", "You're the new teammate, introduce yourself!", "They're the host of a cooking show", "You've escaped a horde of zombies", "You find yourself stranded on a deserted island", "They've lost all memories and sense of self", "Help solve the case of who did it", "It's the future! Year 3000 cyberpunk", "They're speaking in a Shakespeare style", "You're now a world-famous rapper", "You're now a world-famous comedian", "Time Travel to the Year ____ (enter any year)", "Format-- Location:    Scenario:   Feelings:   Goals:  "" "))
+                    text_input2 = st.text_input("Time Travel Year 👇", key="1")
+                    text_input = st.text_input("Enter Custom Scenario 👇", key="4")
             with col2:
-                with header.popover("Current Mood"):
-                    st.title(":smiley:")
-                    #######################################################################################
-                    #MOOD Agent - This LLM call will determine the Mood of the Avatar##
-                    #######################################################################################                    
-                    template = """Your only task is to analyze the current mood based on the scenario and your card. Give me a one sentence explaination of the mood with an emoji to show your mood.  
-                    """
-                    system_message_prompt = SystemMessagePromptTemplate.from_template(template)
-                    human_template = "{text}"
-                    if scenario2 == "<Left Column":
-                        question_template=scenario
-                    question_template=scenario2   
-                    human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
-                    human_message_prompt2 = HumanMessagePromptTemplate.from_template(question_template)
-                    chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt, human_message_prompt2])
-                    def get_chatassistant_moodchain():
-                        moodchain = LLMChain(
-                            llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
-                        return moodchain
-                    moodchain = get_chatassistant_moodchain()
-                    responsemood = moodchain.run(scenario)
-                    st.warning("Current Mood:  \n"+responsemood)
-                    #######################################################################################  
-                    #######################################################################################
-                    #MEMORY Agent - This LLM call will determine the Memories of the Avatar##
-                    #######################################################################################   
+                #if selected2 == "Roleplay":
+                    with st.popover("Info", use_container_width=True):
+                        st.title(":smiley:")
+                        #######################################################################################
+                        #MOOD Agent - This LLM call will determine the Mood of the Avatar##
+                        #######################################################################################                    
+                        template = """Your only task is to analyze the current mood based on the scenario and your card. Give me a one sentence explaination of the mood with an emoji to show your mood.  
+                        """
+                        system_message_prompt = SystemMessagePromptTemplate.from_template(template)
+                        human_template = "{text}"
+                        if scenario2 == "<Left Column":
+                            question_template=scenario
+                        question_template=scenario2   
+                        human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
+                        human_message_prompt2 = HumanMessagePromptTemplate.from_template(question_template)
+                        chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt, human_message_prompt2])
+                        def get_chatassistant_moodchain():
+                            moodchain = LLMChain(
+                                llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
+                            return moodchain
+                        moodchain = get_chatassistant_moodchain()
+                        responsemood = moodchain.run(scenario)
+                        st.warning("Current Mood:  \n"+responsemood)
+                        #######################################################################################  
+                        #######################################################################################
+                        #MEMORY Agent - This LLM call will determine the Memories of the Avatar##
+                        #######################################################################################  
+                        
+                        if str(msgs) != '':
+                            template = """Your task is to analyze the current conversation based on the scenario and your card.
+                            The first internal step is to split the conversation into a list of specific memories.
+                            The next internal step is to rate each memory's poignancy on a scale of 1 to 10. On this scale, 1 represents a completely mundane event (such as brushing teeth or making a bed), while 10 represents an extremely poignant event (such as a break-up or college acceptance). 
+                            
+                            For each memory where the poignancy number is greater than 6, provide a title and one sentence explaination of each memory to summarize the full conversation.
+                            If the poignancy number is less than 6, remove the memory from the list - DO NOT LIST ANY MEMORIES WITH A POIGNANCY NUMBER LESS THAN 6
 
-                    template = """Your task is to analyze the current conversation based on the scenario and your card.
-                    The first internal step is to split the conversation into a list of specific memories.
-                    The next internal step is to rate each memory's poignancy on a scale of 1 to 10. On this scale, 1 represents a completely mundane event (such as brushing teeth or making a bed), while 10 represents an extremely poignant event (such as a break-up or college acceptance). 
-                    
-                    For each memory where the poignancy number is greater than 6, provide a title and one sentence explaination of each memory to summarize the full conversation.
-                    If the poignancy number is less than 6, remove the memory from the list - DO NOT LIST ANY MEMORIES WITH A POIGNANCY NUMBER LESS THAN 6
-
-                    Please provide only a numerical value as the output, with a one sentence explaination of the memory to store. An example is: "(Score 10): New Girlfriend"
-                    """
-                    system_message_prompt = SystemMessagePromptTemplate.from_template(template)
-                    human_template = "{text}"
-                    if scenario2 == "<Left Column":
-                        question_template=scenario
-                    question_template=scenario2   
-                    human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
-                    human_message_prompt2 = HumanMessagePromptTemplate.from_template(question_template)
-                    chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt, human_message_prompt2])
-                    def get_chatassistant_memorychain():
-                        memorychain = LLMChain(
-                            llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
-                        return memorychain
-                    memorychain = get_chatassistant_memorychain()
-                    context = msgs
-                    responsememories = memorychain.run(context)
-                    st.warning("Current Memories:  \n"+responsememories)
-                    #######################################################################################
+                            Please provide only a numerical value as the output, with a one sentence explaination of the memory to store. An example is: "(Score 10): New Girlfriend"
+                            """
+                        system_message_prompt = SystemMessagePromptTemplate.from_template(template)
+                        human_template = "{text}"
+                        if scenario2 == "<Left Column":
+                            question_template=scenario
+                        question_template=scenario2   
+                        human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
+                        human_message_prompt2 = HumanMessagePromptTemplate.from_template(question_template)
+                        chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt, human_message_prompt2])
+                        def get_chatassistant_memorychain():
+                            memorychain = LLMChain(
+                                llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
+                            return memorychain
+                        memorychain = get_chatassistant_memorychain()
+                        context = msgs
+                        responsememories = memorychain.run(context)
+                        st.warning("Current Memories:  \n"+responsememories)
+        #########################################################################################################################################################################
 
         # If Normal Mode is ON, show Interview and News (and Mood):
         else:
+            col1, col2, col3 = st.columns([0.3, 0.3, 0.3])
             with col1:
+                #if talent2 == "None":
                 with st.popover("Interview Questions:"):
                     st.checkbox("Open Ended Questions", disabled=True, help= 'Kick the conversation off with a couple of open-ended questions to get your guest to share their back story')
                     #st.caption(NextTopic)
@@ -450,6 +625,7 @@ with header:
                     st.checkbox("Insight and Advice",help= "Glean something thought-provoking from them. Make sure you ask questions that prompt your guest to share their insights and advice on a topic.")
                     #st.caption(NextTopic4) 
             with col2:
+                #if talent2 == "None":
                 with st.popover("News"):
                     if talent == "Steph Curry":
                         @st.cache_data  # 👈 Add the caching decorator
@@ -500,18 +676,28 @@ with header:
                             return responsequestion
                         responsequestion = load_data5("Music")
                         st.markdown(responsequestion)
+                    if talent == "Sofia Vergara":
+                        @st.cache_data  # 👈 Add the caching decorator
+                        def load_data5(url5):
+                            responsequestion = aitopics.run("Sofia Vergara")
+                            return responsequestion
+                        responsequestion = load_data5("Sofia Vergara")
+                        st.markdown(responsequestion)
             with col3:
                 with st.popover("Current Mood"):
                     #######################################################################################
                     #MOOD Agent - This LLM call will determine the Mood of the Avatar##
-                    #######################################################################################  
+                      #######################################################################################  
                     st.title(":smiley:")
                     #OA Bot##
                     template = """Your only task is to analyze the current mood based on the text and the conversation. Give me a one sentence explaination of the mood with an emoji to show your mood.  
                     """
                     system_message_prompt = SystemMessagePromptTemplate.from_template(template)
                     human_template = "{text}"
-                    question_template=responsequestion   
+                    if str(msgs) != '':
+                        question_template=str(msgs)
+                    else:
+                        question_template="good"  
                     human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
                     human_message_prompt2 = HumanMessagePromptTemplate.from_template(question_template)
                     chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt, human_message_prompt2])
@@ -526,23 +712,27 @@ with header:
                     #######################################################################################
                     #MEMORY Agent - This LLM call will determine the Memories of the Avatar##
                     ####################################################################################### 
-                    template = """Your only task is to analyze the current conversation based on the text. 
-                    Consider the following conversation, and provide a title and one sentence explaination of each memory to summarize the full conversation.
-                    Also rate each memory's poignancy on a scale of 1 to 10. On this scale, 1 represents a completely mundane event (such as brushing teeth or making a bed), while 10 represents an extremely poignant event (such as a break-up or college acceptance). 
-                    Please provide only a numerical value as the output, with a one sentence explaination of the memory to store. An example is: "10: New Girlfriend"
-                    """
-                    system_message_prompt = SystemMessagePromptTemplate.from_template(template)
-                    human_template = "{text}"
-                    human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
-                    chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
-                    def get_chatassistant_memorychain():
-                        memorychain = LLMChain(
-                            llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
-                        return memorychain
-                    memorychain = get_chatassistant_memorychain()
-                    context = msgs
-                    responsememories = memorychain.run(context)
-                    st.warning("Current Memories:  \n"+responsememories)
+                    if str(msgs) != '':
+                        template = """Your only task is to analyze the current conversation based on the text. 
+                        Consider the following conversation, and provide a title and one sentence explaination of each memory to summarize the full conversation.
+                        Also rate each memory's poignancy on a scale of 1 to 10. On this scale, 1 represents a completely mundane event (such as brushing teeth or making a bed), while 10 represents an extremely poignant event (such as a break-up or college acceptance). 
+                        Please provide only a numerical value as the output, with a one sentence explaination of the memory to store. An example is: "10: New Girlfriend"
+                        """
+                        system_message_prompt = SystemMessagePromptTemplate.from_template(template)
+                        human_template = "{text}"
+                        human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
+                        chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+                        def get_chatassistant_memorychain():
+                            memorychain = LLMChain(
+                                llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
+                            return memorychain
+                        memorychain = get_chatassistant_memorychain()
+                        context = msgs
+                        responsememories = memorychain.run(context)
+                        st.warning("Current Memories:  \n"+responsememories)
+
+
+
 
 #################################################################################################################################################
 ### Custom CSS for the sticky header#########
@@ -814,7 +1004,6 @@ if talent2 == "Luka Doncic":
     Description: You are Luka Doncic, a current NBA forward for the Dallas Mavericks. Doncic always displays his joyful personality and sense of humor that makes everyone smile He is a natural problem-solvers who has a knack for connecting with people from different backgrounds and persuading them to work together to achieve a common goal.  Off the court, Luka Doncic has been described as a highly disciplined and hardworking individual who strives for excellence in everything he does, further highlighting his judging tendencies.  He also seems to enjoy the attention and praise he receives from fans and the media.
     """
 
-
 #################################################################################################################################################################
 # justin
 #################################################################################################################################################################
@@ -854,6 +1043,35 @@ Context:
 {context}
 =========
 """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ####GENERIC PROMPT############################################################################################################################
 ##################################################################################
@@ -1072,6 +1290,24 @@ Custom = """
 Follow the Custom Location, Scenario and any other details listed below:
 """
 
+Classroom_Week_1 = """
+[Week 1: Introduction to Artificial Intelligence]
+You are in the classroom, teaching a cource on AI. It's the first week!
+Lesson Plan: Explore the history, key concepts, and current applications of artificial intelligence, providing a foundational understanding of what AI is and its impact on various industries.
+"""
+
+Classroom_Week_2 = """
+[Week 2: Machine Learning Basics]
+You are in the classroom, teaching a cource on AI. It's the second week!
+Lesson Plan: Delve into the fundamentals of machine learning, including supervised and unsupervised learning, and introduce essential algorithms like linear regression and k-means clustering.
+"""
+
+Classroom_Week_3 = """
+[Week 3: Neural Networks and Deep Learning]
+You are in the classroom, teaching a cource on AI. It's the third week!
+Lesson Plan: Examine the structure and function of neural networks, understand the principles of deep learning, and discuss how these technologies are used to solve complex problems.
+"""
+
 #Set the card variable to the current Scenario
 ##############################################################################################################################
 if scenario == "Zombie":
@@ -1110,6 +1346,12 @@ if scenario == "Cooking_Show":
     card=Show_Guest
 if scenario == "Podcast":
     card=Podcast
+if scenario == "Classroom_Week_1":
+    card=Classroom_Week_1
+if scenario == "Classroom_Week_2":
+    card=Classroom_Week_2
+if scenario == "Classroom_Week_3":
+    card=Classroom_Week_3
 
 ######################################################################################################################################
 ######PROMPT CHAINS############################################################################
@@ -1172,8 +1414,6 @@ if talent == "Luka Doncic":
 #### # LLM Section   ############
 #################################################################################################################################################################
 #################################################################################################################################################################
-
-
 
 #chatGPT
 def get_chatassistant_chain_GPT():
@@ -1252,8 +1492,10 @@ You are an interviewer, so try to ask interesting questions that drive the conve
 Provide two predicted questions on seperate lines: One that is lighter, and one that a student would ask. Make sure there is a blank line between each question"""
 system_message_prompt = SystemMessagePromptTemplate.from_template(template)
 human_template = "{text}"
+question_template=NextTopic
 human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
-chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+human_message_prompt2 = HumanMessagePromptTemplate.from_template(question_template)
+chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt, human_message_prompt2])
 def get_chatassistant_questionchain():
     questionchain = LLMChain(
         llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
@@ -1295,8 +1537,6 @@ if mode == "Roleplay":
 #################################################################################################################################################################
 #################################################################################################################################################################
 # Chat Flow
-
-
 #FIRST MESSAGE###############################################
 #If it's roleplay, set the stage with a Message from the Card
 if mode == "Roleplay":
@@ -1374,6 +1614,10 @@ def AddSteph():
     multichain = get_chatassistant_multichain()   
     context = msgs
     multichain = multichain.run(context)
+
+    st.session_state.messages.append({"role": talent2, "content": multichain})
+    #with st.chat_message("user"):
+    #    st.markdown(multichain)
     #IF Video/Audio are ON
     if on:
         if talent2 == "Justin":
@@ -1455,6 +1699,7 @@ def AISteph():
                 text = str(response['answer'])
                 cleaned = re.sub(r'\*.*?\*', '', text)   
                 cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
+                message_placeholder.markdown(cleaned)
                 # If Audio/Video are ON
                 if on:
                     if talent == "Justin":
@@ -1563,27 +1808,247 @@ def AISteph():
                         if os.path.isfile(path+'Output2.mp4'):
                             os.remove(path+'Output2.mp4')  
                 st.session_state.messages.append({"role": "assistant", "content": response['answer']})
+                
 ##########################################################################################################################################
+#Multi-Chat Question to Answer (User to Bot)###############################################################################################
 ##########################################################################################################################################
+def AddYour():
+        multi_question_template = """
+        Determine your dialog for the next line in this chat, based on the last message. You are the User.
+        Keep your question short (no longer than 100 characters)
+        """
+        if mode == "Roleplay":
+            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+card+profile)
+        else:
+            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+profile)
+        human_message_prompt = HumanMessagePromptTemplate.from_template("{text}")
+        chat_prompt2 = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+        def get_chatassistant_multichain():
+            multichain = LLMChain(
+                llm=ChatGroq(api_key=GROQ_API_KEY, model="llama3-70b-8192", temperature=1),prompt=chat_prompt2,verbose=True)
+            return multichain
+        multichain = get_chatassistant_multichain()   
+        context = msgs
+        multichain = multichain.run(context)
+        user_text = multichain
+        user_prompt = str(user_text)
+
+        st.chat_message("user").markdown(user_prompt)
+        st.session_state.messages.append({"role": "user", "content": user_prompt})
+
+        #Then run the second bot's response:    
+        with st.chat_message("assistant", avatar=assistant_logo):
+            #Add Thinking spinner until the text is ready
+            #with st.spinner("Thinking..."):
+                message_placeholder = st.empty()              
+                response = chain.invoke({"question": user_prompt})
+                text = str(response['answer'])
+                cleaned = re.sub(r'\*.*?\*', '', text)   
+                cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
+                message_placeholder.markdown(cleaned)
+                # If Audio/Video are ON
+                if on:
+                    if talent == "Andrew Ng":
+                        audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
+                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4" }
+                    if talent == "Ronaldo":
+                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f6ab107ab97da5cefd33b812e9a72caa.mp4" } 
+                        audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
+                    if talent == "Grimes":
+                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" }
+                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
+                    if talent == "Steph Curry":
+                        audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
+                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
+                    if talent == "Andre Iguodala":
+                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d496b8cd93b3d0b631a7b211aa233771.mp4" }
+                    if talent == "Sofia Vergara":
+                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d95182839da7c8c061d37fc7df72bb7a.mp4" }
+                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+                    if talent == "Draymond Green":
+                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_9d82a467b223af553b18f18c9ce33e38.mp4" }
+                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+                    if talent == "Luka Doncic":
+                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_ef1310293e63a6496d9a396bb45cb973.mp4" }
+                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")                       
+                    #Set path for saving Ex-Human MP4 and EL MP3. Change this to File Server Path
+                    path='//home//ubuntu//source//pocdemo//'
+                     #Convert MP3 file to 30 Second MP3 file, since there's a 30 second maximum in Ex-Human..Split into 2 files if it's up to 60 seconds
+                    audio = audio
+                    save(audio, path+'Output.mp3')
+                    sound = AudioSegment.from_mp3(path+'Output.mp3') 
+                    song_30 = sound[:10000]
+                    song_60 = sound[10000:40000]
+                    song_30.export(path+'Output_30.mp3', format="mp3")   
+                    song_60.export(path+'Output_60.mp3', format="mp3")
+                    #Set 60 Second Mode to None if the file is under 30 Seconds
+                    try:
+                        audio60 = AudioSegment.from_file(path+'Output_60.mp3')
+                    except:
+                        audio60=0 
+
+                    #Ex-Human convert MP3 file to Lip-Sync Video
+                    url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
+                    files = { "audio_file": (path+"Output_30.mp3", open(path+"Output_30.mp3", "rb"), "audio/mp3") }
+                    files2 = { "audio_file": (path+"Output_60.mp3", open(path+"Output_60.mp3", "rb"), "audio/mp3") }
+                    payload = payload
+                    headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
+                    lipsync = requests.post(url, data=payload, files=files, headers=headers)
+                    path_to_response = path+"Output.mp4"  # Specify the path to save the video response                    path_to_response = path+"Output.mp4"  # Specify the path to save the video response
+                                    
+                    with open(path_to_response, "wb") as f:
+                        f.write(lipsync.content)
+                            
+                    #Lip-Sync MP4 should now be on server. The HTML File-Host should be on the server: screen -r fileserver
+                    #Figure out how long the Lip-Sync Video is
+                    import cv2 as cv
+                    vidcapture = cv.VideoCapture('http://34.133.91.213:8000/Output.mp4')
+                    fps = vidcapture.get(cv.CAP_PROP_FPS)
+                    totalNoFrames = vidcapture.get(cv.CAP_PROP_FRAME_COUNT)
+                    durationInSeconds = totalNoFrames / fps                       
+                    #Add Thinking spinner until the text is ready
+                    #with st.spinner("Talking..."):                            
+                    #Replace the Idle MP4 with the Lip-Sync Video
+                    with st.sidebar:   
+                        video.empty()
+                        html_string = """
+                            <video autoplay video width="400">
+                            <source src="http://34.133.91.213:8000/Output.mp4" type="video/mp4">
+                            </video>
+                            """
+                        lipsync = st.empty()
+                        lipsync.markdown(html_string, unsafe_allow_html=True)                              
+                        #Start the Count Up until the next file should play            
+                        start = time.time()
+                    #Generate the 2nd MP4 while the 1st is playing             
+                    if audio60 is not 0:
+                        lipsync2 = requests.post(url, data=payload, files=files2, headers=headers)
+                        path_to_response2 = path+"Output2.mp4"  # Specify the path to save the video response
+                        #Also write the 60 second file if it's there
+                        with open(path_to_response2, "wb") as f:               
+                            f.write(lipsync2.content)
+                        vidcapture2 = cv.VideoCapture('http://34.133.91.213:8000/Output2.mp4')
+                        fps2 = vidcapture2.get(cv.CAP_PROP_FPS)
+                        totalNoFrames2 = vidcapture2.get(cv.CAP_PROP_FRAME_COUNT)
+                        durationInSeconds2 = totalNoFrames2 / fps2   
+                    #Wait until it's done (Count Down = Total Length - Count Up)         
+                    time.sleep(10-(time.time() - start))                      
+                    #Play the 60 Second File if it exists    
+                    if audio60 is not 0:
+                            with st.sidebar:                                   
+                                lipsync.empty()
+                                #video.empty()  # optionally delete the element afterwards
+                                html_string = """
+                                    <video autoplay video width="400">
+                                    <source src="http://34.133.91.213:8000/Output2.mp4" type="video/mp4">
+                                    </video>
+                                    """
+                                lipsync = st.empty()
+                                lipsync.markdown(html_string, unsafe_allow_html=True)
+                                #Wait until it's done, 
+                                time.sleep(durationInSeconds2)                                
+                    #then return to the Idle Video                           
+                    lipsync.empty()
+                    video.markdown(video_html, unsafe_allow_html=True)  
+                    if os.path.isfile(path+'Output2.mp4'):
+                        os.remove(path+'Output2.mp4')  
+                st.session_state.messages.append({"role": "assistant", "content": response['answer']})
+            
+##########################################################################################################################################
+########################################################################################################################################## 
 ##########################################################################################################################################
 
+from streamlit_extras.bottom_container import bottom 
+with bottom():
+    col1, col2, col3, col4 = st.columns([0.15, 0.5, 0.2, .15])
+    with col1:
+        if talent2 == "None":
+            st.button('Poke'+"👈", on_click=StartConvo, key = "199", use_container_width=True)
+        else:
+            with st.popover("Engage", use_container_width=True):
+                st.button('Poke '+talent+"👈", on_click=StartConvo, key = "199", use_container_width=True)
+            #with col2:
+                st.button("Poke "+talent2+"👈", on_click=AddSteph, key = "024", use_container_width=True)
+            #with col1:
+                st.button(talent2+" to "+talent, on_click=AISteph, key = "025", use_container_width=True)
+    with col2:
+        st.button('Continue Chat', on_click=AddYour, key = "233", use_container_width=True)
+    with col3:
+        st.button('Clear Chat', on_click=ClearChat, key = "033", use_container_width=True)
+    with col4:
+        #st.button(':microphone:', on_click=speech_to_text, key = "033", use_container_width=True)
+        text = speech_to_text('Mic🎤',language='en', just_once=True, key='STT', use_container_width=True)
+        state = st.session_state
+        if 'text_received' not in state:
+            state.text_received = []
+##########################################################################################################################################            
 #Add in the Sound Design options
 ##########################################################################################################################################
 with st.sidebar:
-    with tab1:
-        if talent2 == "None":
-            pass
-        else:
-            header.button(talent2+" to User", on_click=AddSteph, key = "124")
-            header.button(talent2+" to "+talent, on_click=AISteph, key = "125")
         if mode == "Roleplay":
-            if scenario2 == "Rapper":
-                st.audio("http://localhost:1180/Beats.mp3", format="audio/mpeg", loop=True)
-            if scenario2 == "Comedian":
-                st.audio("http://localhost:1180/Comedy.mp3", format="audio/mpeg", loop=True)
+            if scenario == "Rapper":
+                st.audio("//home//ubuntu//source//pocdemo//Beats.mp3", format="audio/mpeg", loop=True)
+            if scenario == "Comedian":
+                st.audio("//home//ubuntu//source//pocdemo//Comedy.mp3", format="audio/mpeg", loop=True)
 
-
+#CHAT MESSAGES##############################################################
+############################################################################
+#Start the Chat! This is the For Loop for ever message that is sent:
+#for message in st.session_state.messages:
+#    with st.chat_message(message["role"]):
+#        st.markdown(message["content"])
+#########################################################
 ##########################################################################################################################################
+#####SPEECH TO TEXT#######################################################################################
+##########################################################################################################
+if text:
+    state.text_received.append(text)
+    user_prompt = text
+
+    with st.chat_message("user"):
+        st.markdown(user_prompt)
+    with st.chat_message("assistant", avatar=assistant_logo):
+        message_placeholder = st.empty()
+        response = chain.invoke({"question": user_prompt})
+        message_placeholder.markdown(response['answer'])
+
+        #ElevelLabs API Call and Return
+        text = str(response['answer'])
+        cleaned = re.sub(r'\*.*?\*', '', text)
+        if talent == "Andrew Ng":
+            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4" }
+        if talent == "Ronaldo":
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f6ab107ab97da5cefd33b812e9a72caa.mp4" } 
+            audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
+        if talent == "Grimes":
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" }
+            audio=client2.generate(text=cleaned,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
+        if talent == "Steph Curry":
+            audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
+        if talent == "Andre Iguodala":
+            audio=client2.generate(text=cleaned,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d496b8cd93b3d0b631a7b211aa233771.mp4" }
+        if talent == "Sofia Vergara":
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d95182839da7c8c061d37fc7df72bb7a.mp4" }
+            audio=client2.generate(text=cleaned,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+        if talent == "Draymond Green":
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_9d82a467b223af553b18f18c9ce33e38.mp4" }
+            audio=client2.generate(text=cleaned,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+        if talent == "Luka Doncic":
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_ef1310293e63a6496d9a396bb45cb973.mp4" }
+            audio=client2.generate(text=cleaned,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")
+        # Create single bytes object from the returned generator.
+        data = b"".join(audio)
+
+        ##send data to audio tag in HTML
+        audio_base64 = base64.b64encode(data).decode('utf-8')
+        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
+        st.markdown(audio_tag, unsafe_allow_html=True)
+    st.session_state.messages.append({"role": "assistant", "content": response['answer']})
+
 ##########################################################################################################################################
 ##########################################################################################################################################
 #If you want Video + Audio ON
@@ -1897,15 +2362,8 @@ if on:
                         #Generate the 2nd MP4 while the 1st is playing             
 
                         #Define the ElevenLabs Voice Name and Idle MP4 from Ex-Human for each Talent
-                        if talent == "Justin"or "Justin 2"or "Justin 3"or "Justin 4"or "Justin 5":                        
-                            if talent == "Justin":
-                                audio2=client2.generate(text=lastName, voice='Justin', model="eleven_turbo_v2")
-                            if talent == "Justin 3":
-                                audio2=client2.generate(text=lastName, voice='Justin', model="eleven_turbo_v2")
-                            if talent == "Justin 4":
-                                audio2=client2.generate(text=lastName, voice='Justin', model="eleven_turbo_v2")
-                            if talent == "Justin 5":
-                                audio2=client2.generate(text=lastName, voice='Justin', model="eleven_turbo_v2")
+                        if talent == "Justin"                       
+                            audio2=client2.generate(text=lastName, voice='Justin', model="eleven_turbo_v2")
                         if talent == "Justin Age 12":
                             audio2=client2.generate(text=lastName, voice='Justin', model="eleven_turbo_v2")
                         if talent == "Grimes":
