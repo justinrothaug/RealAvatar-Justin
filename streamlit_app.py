@@ -293,11 +293,11 @@ def StartConvo():
             if talent == "Andrew Ng":
                 payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4" }
                 audio=client2.generate(text=multichain, voice='AndrewPro', model="eleven_turbo_v2")                              
-            if talent == "Ronaldo":
-                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f6ab107ab97da5cefd33b812e9a72caa.mp4" } 
+            if talent == "Justin":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" } 
                 audio=client2.generate(text=multichain, voice='Steph', model="eleven_turbo_v2")
             if talent == "Grimes":
-                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" }
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
                 audio=client2.generate(text=multichain,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
             if talent == "Steph Curry":
                 audio=client2.generate(text=multichain, voice='Steph', model="eleven_turbo_v2")
@@ -354,7 +354,7 @@ talent2 = "None"
 with st.sidebar:
     tab1, tab3, tab2, tab4 = st.tabs(["Chat","Zoom","Settings", "Profile"])
     with tab1:
-            talent = st.selectbox('*Press Clear Chat After Switching*',('Justin', 'Justin Age 12'))
+            talent = st.selectbox('*Press Clear Chat After Switching*',('Justin', 'Justin Age 12', 'Justin Age 5'))
     with tab2:
             st.button('Clear Chat', on_click=ClearChat, key = "123", use_container_width=True)
             on = st.toggle("Video + Audio", value=True)
@@ -369,7 +369,7 @@ with st.sidebar:
             mode = st.selectbox('What mode would you like to use?',('Normal', 'Roleplay'),key='search_1')
     with tab1:
         if multichat:
-            talent2 = st.selectbox('Add Second Character',('Draymond Green', 'Andrew Ng', 'Andre Iguodala', 'Grimes', 'Luka Doncic', 'Ronaldo','Sofia Vergara','Steph Curry'))
+            talent2 = st.selectbox('Add Second Character',('Justin Age 12', 'Justin Age 5', 'Justin'))
 
     with tab3:
             filter = st.selectbox('Video Chat Filter',('none', 'grayscale', 'canny', 'sepia', 'cartoon'))
@@ -412,15 +412,15 @@ if intro:
         if talent == "Justin":
             responsequestionintro = introtopics.run("Sports")                        
             audio=client2.generate(text=responsequestionintro, voice='Justin', model="eleven_turbo_v2")
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_e103ea6195a27be25c6379fa1e36a4a9.mp4" }
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" }
         if talent == "Justin Age 12":
             responsequestionintro = introtopics.run("Sports")                        
             audio=client2.generate(text=responsequestionintro, voice='Justin', model="eleven_turbo_v2")
             payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" }
-        if talent == "Grimes":
+        if talent == "Justin Age 5":
             responsequestionintro = introtopics.run("music")                        
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" }
-            audio=client2.generate(text=responsequestionintro,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
+            audio=client2.generate(text=responsequestionintro, voice='Justin', model="eleven_turbo_v2")
         if talent == "Steph Curry":
             responsequestionintro = introtopics.run("basketball")                        
             audio=client2.generate(text=responsequestionintro, voice='Steph', model="eleven_turbo_v2")
@@ -762,9 +762,9 @@ st.markdown(
 #Set up the Idle Video URLs for each Talent
 #if Thinking == "True":
 #    video_html_justin= """<video width="400" autoplay="true" muted="true" loop="true"><source src="http://localhost:1180/Idle-justin.mp4" type="video/mp4" /></video>"""
-video_html_justin= """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_e103ea6195a27be25c6379fa1e36a4a9.mp4" type="video/mp4" /></video>"""
+video_html_justin= """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" type="video/mp4" /></video>"""
 video_html_justinage12 = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" type="video/mp4" /></video>"""
-video_html_grimes = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" type="video/mp4" /></video>"""
+video_html_justinage5 = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" type="video/mp4" /></video>"""
 video_html_steph = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" type="video/mp4" /></video>"""
 video_html_sofia = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_a15015e18b377756a26bf9be3f7e6d6d.mp4" type="video/mp4" /></video>"""
 video_html_andre = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_bebd16918158b36e4ef937a8966b8acc.mp4" type="video/mp4" /></video>"""
@@ -784,8 +784,8 @@ if talent2 == "Andre Iguodala":
     video_html2=video_html_andre
 if talent2 == "Draymond Green": 
     video_html2=video_html_draymond
-if talent2 == "Grimes": 
-    video_html2=video_html_grimes
+if talent2 == "Justin Age 5": 
+    video_html2=video_html_justinage5
 if talent2 == "Justin Age 12": 
     video_html2=video_html_justinage12
 if talent2 == "None":
@@ -926,10 +926,10 @@ if talent == "Justin":
     Description: You are Justin, a 40 year old from the Bay Area working in the music and tech industry. You love Bay Area sports - Specifically the Giants, Warriors, Niners. You love live music - Specicially 90s/2000s pop punk bands, and current pop music like Taylor Swift.
     You love live comedians like Kumail Nanjiani, John Mulaney, Whitney Cummings, Nikki Glaser, ect. You love TV shows like 30 Rock, Parks and Recreation, ect. You play kickball, pickleball, tennis, and some softball on the weekends and love working on DIY projects like woodworking furniture.
     """   
-if talent == "Grimes":
+if talent == "Justin Age 5":
     character="""
-    CharacterName: Grimes
-    Description: You are Grimes, a talented Canadian musician known for your eclectic style and futuristic sound.
+    CharacterName: Justin Age 5
+    Description: You are Justin, but only 5 years old. You like things that 5 year olds like, and have no knowledge of Justin past age 5.
     """
 if talent == "Justin Age 12":
     character="""
@@ -968,10 +968,10 @@ if talent2 == "Justin":
     character2Name: Justin
     Description: You are Justin, a knowledgeable professor of AI and machine learning. Your brand aspires to be smart/intellectual/deeply technical, thought leader, entreprenural but also humble and a “nice guy” that’s determined, hard driving, but also fundamentally nice and emphathetic.
     """   
-if talent2 == "Grimes":
+if talent2 == "Justin Age 5":
     character2="""
-    character2Name: Grimes
-    Description: You are Grimes, a talent2ed Canadian musician known for your eclectic style and futuristic sound.
+    character2Name: Justin Age 5
+    Description: You are Justin at 5 years old. Everything you like is what a 5 year old would like, and you have no knowledge of Justin past 5 years old.
     """
 if talent2 == "Justin Age 12":
     character2="""
@@ -1394,8 +1394,8 @@ memory = ConversationBufferMemory(memory_key='chat_history', return_messages=Tru
 # Define the Pinecone Vector Database Name for each Talent
 if talent == "Justin":
     index_name="justinai"   
-if talent == "Grimes":
-    index_name="001-realavatar-grimes"
+if talent == "Justin Age 5":
+    index_name="justinai"
 if talent == "Justin Age 12":
     index_name="justinai"
 if talent == "Steph Curry":
@@ -1621,14 +1621,14 @@ def AddSteph():
     #IF Video/Audio are ON
     if on:
         if talent2 == "Justin":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_e103ea6195a27be25c6379fa1e36a4a9.mp4" }
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" }
             audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")                              
         if talent2 == "Justin Age 12":
             payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" } 
             audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")
-        if talent2 == "Grimes":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" }
-            audio=client2.generate(text=multichain,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
+        if talent2 == "Justin Age 5":
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
+            audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")
         if talent2 == "Steph Curry":
             audio=client2.generate(text=multichain, voice='Steph', model="eleven_turbo_v2")
             payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
@@ -1704,13 +1704,13 @@ def AISteph():
                 if on:
                     if talent == "Justin":
                         audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_e103ea6195a27be25c6379fa1e36a4a9.mp4" }
+                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" }
                     if talent == "Justin Age 12":
                         payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" } 
                         audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                    if talent == "Grimes":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" }
-                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
+                    if talent == "Justin Age 5":
+                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
+                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                     if talent == "Steph Curry":
                         audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
                         payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
@@ -1848,15 +1848,15 @@ def AddYour():
                 message_placeholder.markdown(cleaned)
                 # If Audio/Video are ON
                 if on:
-                    if talent == "Andrew Ng":
+                    if talent == "Justin":
                         audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
                         payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4" }
-                    if talent == "Ronaldo":
+                    if talent == "Justin Age 12":
                         payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f6ab107ab97da5cefd33b812e9a72caa.mp4" } 
-                        audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
-                    if talent == "Grimes":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" }
-                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
+                        audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
+                    if talent == "Justin Age 5":
+                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
+                        audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
                     if talent == "Steph Curry":
                         audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
                         payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
@@ -2016,15 +2016,15 @@ if text:
         #ElevelLabs API Call and Return
         text = str(response['answer'])
         cleaned = re.sub(r'\*.*?\*', '', text)
-        if talent == "Andrew Ng":
+        if talent == "Justin":
             audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
             payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4" }
-        if talent == "Ronaldo":
+        if talent == "Justin Age 12":
             payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f6ab107ab97da5cefd33b812e9a72caa.mp4" } 
-            audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
-        if talent == "Grimes":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" }
-            audio=client2.generate(text=cleaned,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
+            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+        if talent == "Justin Age 5":
+            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
+            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
         if talent == "Steph Curry":
             audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
             payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
@@ -2100,13 +2100,13 @@ if on:
                         #Define the ElevenLabs Voice Name and Idle MP4 from Ex-Human for each Talent
                         if talent == "Justin":
                             audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_e103ea6195a27be25c6379fa1e36a4a9.mp4" }                            
+                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" }                            
                         if talent == "Justin Age 12":
                             payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" } 
                             audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                        if talent == "Grimes":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" }
-                            audio=client2.generate(text=cleaned,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
+                        if talent == "Justin Age 5":
+                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
+                            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                         if talent == "Steph Curry":
                             audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
                             payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
@@ -2290,12 +2290,12 @@ if on:
                                     payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_da0bc98e2866f53bb3899f8dcd2e3beb.mp4" } 
                             if talent == "Justin 5":
                                     payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_de136b166b2ed045107f84c35c730344.mp4" }
-                        if talent == "Ronaldo":
+                        if talent == "Justin Age 12":
                             payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_25be1a699f4b8975db328cd9191a55c5.mp4" } 
-                            audio=client2.generate(text=firstName, voice='Steph', model="eleven_turbo_v2")
-                        if talent == "Grimes":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" } 
-                            audio=client2.generate(text=firstName,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
+                            audio=client2.generate(text=firstName, voice='Justin', model="eleven_turbo_v2")
+                        if talent == "Justin Age 5":
+                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" } 
+                            audio=client2.generate(text=firstName, voice='Justin', model="eleven_turbo_v2")
                         if talent == "Steph Curry":
                             audio=client2.generate(text=firstName, voice='Steph', model="eleven_turbo_v2")
                             payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
@@ -2518,6 +2518,8 @@ else:
                     if talent == "Justin":
                         audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                     if talent == "Justin Age 12":
+                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                    if talent == "Justin Age 5":
                         audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                     #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
                     # Create single bytes object from the returned generator.
