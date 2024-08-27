@@ -811,8 +811,8 @@ if talent == "Justin":
         video.markdown(video_html, unsafe_allow_html=True)
 #JustinSidebar Settings#
 
-#Grimes Sidebar Settings#
-if talent == "Grimes":
+#Justin Sidebar Settings#
+if talent == "Justin Age 5":
     with st.sidebar:  
         with tab2:
             if mode == "Roleplay":
@@ -820,9 +820,9 @@ if talent == "Grimes":
             else:
                 model = st.selectbox('',('llama-3.1-70b-instruct', 'mixtral-8x7b-32768', 'claude-3-opus-20240229' ,'gpt-4o'))
         video = st.empty()
-        video_html=video_html_grimes       
+        video_html=video_html_justinage5       
         video.markdown(video_html, unsafe_allow_html=True)  
-    template="prompt_template_grimes"
+    template="prompt_template_justinage5"
 #Grimes Sidebar Settings#
 
 #Ronaldo Sidebar Settings#
