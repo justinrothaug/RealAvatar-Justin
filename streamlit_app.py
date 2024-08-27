@@ -1492,7 +1492,7 @@ You are an interviewer, so try to ask interesting questions that drive the conve
 Provide two predicted questions on seperate lines: One that is lighter, and one that a student would ask. Make sure there is a blank line between each question"""
 system_message_prompt = SystemMessagePromptTemplate.from_template(template)
 human_template = "{text}"
-question_template=NextTopic
+question_template="Blank"
 human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
 human_message_prompt2 = HumanMessagePromptTemplate.from_template(question_template)
 chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt, human_message_prompt2])
