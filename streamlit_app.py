@@ -2019,12 +2019,12 @@ with bottom():
 ##########################################################################################################################################            
 #Add in the Sound Design options
 ##########################################################################################################################################
-with st.sidebar:
-        if mode == "Roleplay":
-            if scenario == "Rapper":
-                st.audio("//home//ubuntu//source//pocdemo//Beats.mp3", format="audio/mpeg", loop=True)
-            if scenario == "Comedian":
-                st.audio("//home//ubuntu//source//pocdemo//Comedy.mp3", format="audio/mpeg", loop=True)
+#with st.sidebar:
+#        if mode == "Roleplay":
+#            if scenario == "Rapper":
+#                st.audio("//home//ubuntu//source//pocdemo//Beats.mp3", format="audio/mpeg", loop=True)
+#            if scenario == "Comedian":
+#                st.audio("//home//ubuntu//source//pocdemo//Comedy.mp3", format="audio/mpeg", loop=True)
 
 #CHAT MESSAGES##############################################################
 ############################################################################
