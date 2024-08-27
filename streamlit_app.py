@@ -1669,11 +1669,11 @@ def AddSteph():
     if audioonly:
         #ElevelLabs API Call and Return
         if talent == "Justin":
-        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
         if talent == "Justin Age 12":
-        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
         if talent == "Justin Age 5":
-        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
         #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
         # Create single bytes object from the returned generator.
         data = b"".join(audio)
@@ -1814,11 +1814,11 @@ def AISteph():
                     if audioonly:
                         #ElevelLabs API Call and Return
                         if talent == "Justin":
-                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                         if talent == "Justin Age 12":
-                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                         if talent == "Justin Age 5":
-                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                         #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
                         # Create single bytes object from the returned generator.
                         data = b"".join(audio)
@@ -1975,11 +1975,11 @@ def AddYour():
                  if audioonly:
                         #ElevelLabs API Call and Return
                         if talent == "Justin":
-                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                         if talent == "Justin Age 12":
-                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                         if talent == "Justin Age 5":
-                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
                         #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
                         # Create single bytes object from the returned generator.
                         data = b"".join(audio)
