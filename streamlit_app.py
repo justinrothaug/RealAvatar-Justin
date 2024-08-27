@@ -373,7 +373,7 @@ with st.sidebar:
 
     with tab3:
             filter = st.selectbox('Video Chat Filter',('none', 'grayscale', 'canny', 'sepia', 'cartoon'))
-            webrtc_ctx = webrtc_streamer(key="WYH",mode=WebRtcMode.SENDRECV,rtc_configuration=RTC_CONFIGURATION,media_stream_constraints={"video": True, "audio": False},async_processing=False, video_frame_callback=transform)
+            #webrtc_ctx = webrtc_streamer(key="WYH",mode=WebRtcMode.SENDRECV,rtc_configuration=RTC_CONFIGURATION,media_stream_constraints={"video": True, "audio": False},async_processing=False, video_frame_callback=transform)
     with tab4:
         userinput = st.text_area("Enter Your Profile 👇", key="5", value = "User has not entered any information, use a generic profile")
         profile=userinput
