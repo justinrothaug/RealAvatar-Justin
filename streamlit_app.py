@@ -347,8 +347,21 @@ def StartConvo():
             video.markdown(video_html, unsafe_allow_html=True)       
             if os.path.isfile(path+'OutputChar2.mp4'):
                 os.remove(path+'OutputChar2.mp4')    
-        #Write the Text Message
-
+        if audioonly:
+            #ElevelLabs API Call and Return
+            if talent == "Justin":
+                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+            if talent == "Justin Age 12":
+                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+            if talent == "Justin Age 5":
+                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+            #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
+            # Create single bytes object from the returned generator.
+            data = b"".join(audio)
+            ##send data to audio tag in HTML
+            audio_base64 = base64.b64encode(data).decode('utf-8')
+            audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
+            st.markdown(audio_tag, unsafe_allow_html=True)
 # Sidebar Tab 2 and 3 - Tab 2 has the Main Settings, and Tab 3 has the "Zoom" Video Chat
 talent2 = "None"
 with st.sidebar:
@@ -545,10 +558,10 @@ with header:
             col1, col2 = st.columns([0.68, .32])
             with col1:
                 with st.popover("Change Scenario", use_container_width=True):
-                    if talent == "Andrew Ng":
-                        scenario = st.radio('Roleplay Mood or Location',('Classroom_Week_1','Classroom_Week_2', 'Classroom_Week_3', 'Friend','Happy','Sad', 'Interview', 'Podcast', 'Zombie', 'Island', 'Memory', 'Murder_Mystery', 'Cyberpunk', 'Shakespeare', 'Rapper', 'Comedian', 'Custom_Time_Travel', 'Custom'), 
-                                            captions = ("Week 1: Introduction to Artificial Intelligence", "Week 2: Machine Learning Basics", "Week 3: Neural Networks and Deep Learning", "You're catching up with a great friend", "They're in the best mood", "They're really sad, cheer them up!", "You're the interviewer, ask questions!", "You are a guest on their podcast/show ", "You've escaped a horde of zombies", "You find yourself stranded on a deserted island", "They've lost all memories and sense of self", "Help solve the case of who did it", "It's the future! Year 3000 cyberpunk", "They're speaking in a Shakespeare style", "You're now a world-famous rapper", "You're now a world-famous comedian", "Time Travel to the Year ____ (enter any year)", "Format-- Location:    Scenario:   Feelings:   Goals:  "" "))
-                    else:
+                    #if talent == "Andrew Ng":
+                        #scenario = st.radio('Roleplay Mood or Location',('Classroom_Week_1','Classroom_Week_2', 'Classroom_Week_3', 'Friend','Happy','Sad', 'Interview', 'Podcast', 'Zombie', 'Island', 'Memory', 'Murder_Mystery', 'Cyberpunk', 'Shakespeare', 'Rapper', 'Comedian', 'Custom_Time_Travel', 'Custom'), 
+                                            #captions = ("Week 1: Introduction to Artificial Intelligence", "Week 2: Machine Learning Basics", "Week 3: Neural Networks and Deep Learning", "You're catching up with a great friend", "They're in the best mood", "They're really sad, cheer them up!", "You're the interviewer, ask questions!", "You are a guest on their podcast/show ", "You've escaped a horde of zombies", "You find yourself stranded on a deserted island", "They've lost all memories and sense of self", "Help solve the case of who did it", "It's the future! Year 3000 cyberpunk", "They're speaking in a Shakespeare style", "You're now a world-famous rapper", "You're now a world-famous comedian", "Time Travel to the Year ____ (enter any year)", "Format-- Location:    Scenario:   Feelings:   Goals:  "" "))
+                    #else:
                         scenario = st.radio('Roleplay Mood or Location',('Friend','Happy','Sad', 'Interview', 'Podcast', 'Gym','Teammate', 'Cooking_Show', 'Zombie', 'Island', 'Memory', 'Murder_Mystery', 'Cyberpunk', 'Shakespeare', 'Rapper', 'Comedian', 'Custom_Time_Travel', 'Custom_Time_Travel', 'Custom'), 
                                             captions = ("You're catching up with a great friend", "They're in the best mood", "They're really sad, cheer them up!", "You're the interviewer, ask questions!", "You are a guest on their podcast/show ", "You just caught them in the gym", "You're the new teammate, introduce yourself!", "They're the host of a cooking show", "You've escaped a horde of zombies", "You find yourself stranded on a deserted island", "They've lost all memories and sense of self", "Help solve the case of who did it", "It's the future! Year 3000 cyberpunk", "They're speaking in a Shakespeare style", "You're now a world-famous rapper", "You're now a world-famous comedian", "Time Travel to the Year ____ (enter any year)", "Format-- Location:    Scenario:   Feelings:   Goals:  "" "))
                     text_input2 = st.text_input("Time Travel Year 👇", key="1")
@@ -1043,30 +1056,6 @@ Context:
 {context}
 =========
 """
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1676,7 +1665,22 @@ def AddSteph():
         lipsync22.empty()
         video.markdown(video_html2, unsafe_allow_html=True)       
         if os.path.isfile(path+'OutputChar2.mp4'):
-            os.remove(path+'OutputChar2.mp4')    
+            os.remove(path+'OutputChar2.mp4') 
+    if audioonly:
+        #ElevelLabs API Call and Return
+        if talent == "Justin":
+        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+        if talent == "Justin Age 12":
+        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+        if talent == "Justin Age 5":
+        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+        #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
+        # Create single bytes object from the returned generator.
+        data = b"".join(audio)
+        ##send data to audio tag in HTML
+        audio_base64 = base64.b64encode(data).decode('utf-8')
+        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
+        st.markdown(audio_tag, unsafe_allow_html=True)
     #Write the Text Message
     st.session_state.messages.append({"role": talent2, "content": multichain})
 
@@ -1806,7 +1810,22 @@ def AISteph():
                         lipsync.empty()
                         video.markdown(video_html, unsafe_allow_html=True)  
                         if os.path.isfile(path+'Output2.mp4'):
-                            os.remove(path+'Output2.mp4')  
+                            os.remove(path+'Output2.mp4')
+                    if audioonly:
+                        #ElevelLabs API Call and Return
+                        if talent == "Justin":
+                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                        if talent == "Justin Age 12":
+                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                        if talent == "Justin Age 5":
+                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                        #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
+                        # Create single bytes object from the returned generator.
+                        data = b"".join(audio)
+                        ##send data to audio tag in HTML
+                        audio_base64 = base64.b64encode(data).decode('utf-8')
+                        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
+                        st.markdown(audio_tag, unsafe_allow_html=True)
                 st.session_state.messages.append({"role": "assistant", "content": response['answer']})
                 
 ##########################################################################################################################################
@@ -1952,7 +1971,22 @@ def AddYour():
                     lipsync.empty()
                     video.markdown(video_html, unsafe_allow_html=True)  
                     if os.path.isfile(path+'Output2.mp4'):
-                        os.remove(path+'Output2.mp4')  
+                        os.remove(path+'Output2.mp4') 
+                 if audioonly:
+                        #ElevelLabs API Call and Return
+                        if talent == "Justin":
+                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                        if talent == "Justin Age 12":
+                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                        if talent == "Justin Age 5":
+                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+                        #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
+                        # Create single bytes object from the returned generator.
+                        data = b"".join(audio)
+                        ##send data to audio tag in HTML
+                        audio_base64 = base64.b64encode(data).decode('utf-8')
+                        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
+                        st.markdown(audio_tag, unsafe_allow_html=True)
                 st.session_state.messages.append({"role": "assistant", "content": response['answer']})
             
 ##########################################################################################################################################
