@@ -357,7 +357,7 @@ with st.sidebar:
             talent = st.selectbox('*Press Clear Chat After Switching*',('Justin', 'Justin Age 12', 'Justin Age 5'))
     with tab2:
             st.button('Clear Chat', on_click=ClearChat, key = "123", use_container_width=True)
-            on = st.toggle("Video + Audio", value=True)
+            on = st.toggle("Video + Audio", value=False)
             multichat = st.toggle("Add Second Character", value=False)
             sync = st.toggle("Sync Text with A/V", value=False)
             VideoHack = st.toggle("Ex-Human Stream Hack", value=False)
