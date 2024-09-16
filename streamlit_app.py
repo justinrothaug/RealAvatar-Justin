@@ -212,7 +212,7 @@ with st.sidebar:
             VideoHack = st.toggle("Ex-Human Stream Hack", value=False)
             Thinking = st.toggle("Thinking Animation Test", value=False)
             sync = st.toggle("Sync Text with A/V (Delay Text Display)", value=False)
-            TextToSpeech = st.selectbox('What TTS would you like to use?',('Elevenlabs', 'SpeechLab'))
+            TextToSpeech = st.selectbox('What TTS would you like to use?',('ElevenLabs', 'SpeechLab'))
             mode = st.selectbox('Normal/Roleplay Mode',('Normal', 'Roleplay'),key='search_1')
             mobile = st.toggle("mobile", value=False)
             videoplace = st.toggle("Fullscreen Video",value=False)
