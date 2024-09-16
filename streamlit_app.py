@@ -191,177 +191,12 @@ def ClearChat():
         if talent2 == "Sofia Vergara":
             video = st.empty()
             video_html2=video_html_sofia
-#############################################################################################################################
-#Agent to Start the Conversation (Introduction, News, or Generic
-#############################################################################################################################
 
-def StartConvo():
-    if introduction:       
-        st.session_state.messages = [{"role": "assistant", "content": "Hello there, this is the Real Avatar of Andrew NG. You're not speaking directly to Andrew, but a digital representation that has been trained on Andrew's writing. What would you like to discuss today?"}]    
-        with st.sidebar:   
-            video.empty()  # optionally delete the element afterwards   
-            html_string = """
-                <video autoplay video width="400">
-                <source src="http://34.133.91.213:8000/Output22.mp4" type="video/mp4">
-                </video>
-                """         
-            lipsync = st.empty()
-            lipsync.markdown(html_string, unsafe_allow_html=True)
-            time.sleep(25)
-            lipsync.empty()
-            video.markdown(video_html, unsafe_allow_html=True)
-    if intro:
-        st.session_state.messages = [{"role": "assistant", "content": responsequestionintro}]
-        with st.sidebar:   
-            video.empty()  # optionally delete the element afterwards   
-            html_string = """
-                <video autoplay video width="400">
-                <source src="http://localhost:1180/Outputintro.mp4" type="video/mp4">
-                </video>
-                """         
-            lipsync = st.empty()
-            lipsync.markdown(html_string, unsafe_allow_html=True)
-            time.sleep(25)
-            lipsync.empty()
-            video.markdown(video_html, unsafe_allow_html=True)
-            
-    if not introduction and not intro:   
-        if str(msgs) != '':
-            multi_question_template = """
-            You'd like to continue the previous conversation after a brief lull (maybe you had to step away for a minute).
-            Try to talk about something new but related to the current topic in the previous message..maybe your favorite topic or one of similar interests.
-            If it comes up odd, just keep talking about the current topic (in the last message). Maybe ask a follow-up question or continue the line of thought"
 
-            |About The User|
-            - The User has described themselves in the Profile attached below. Take note of any details like Name, Age, Occuptaion or Interests, and incorperate them in your response if applicable
-            - Address the User as their Name if it was provided.
-            
-            It is important to KEEP IT SHORT. Keep it short less than 80-100 tokens long.
-            """
-        if str(msgs) == '':
-            multi_question_template = """
-            The User has just come up to talk to you, determine your introduction dialog to this chat. 
-            Roll the dice, and if it comes up even talk about one of the news topics related to your favorite topic or one of your interests.
-            If it comes up odd, just say a generic introduction like "How are you doing today?"
 
-            |About The User|
-            - The User has described themselves in the Profile attached below. Take note of any details like Name, Age, Occuptaion or Interests, and incorperate them in your response if applicable
-            - Address the User as their Name if it was provided.
-            
-            It is important to KEEP IT SHORT. Keep it short less than 80-100 tokens long.
-            """ 
-        if mode == "Roleplay":
-            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+character+card+profile)
-        else:
-            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+character+profile)
-        human_message_prompt = HumanMessagePromptTemplate.from_template("{text}")
-        chat_prompt2 = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
-        def get_chatassistant_multichain():
-            multichain = LLMChain(
-                llm=ChatPerplexity(model="llama-3.1-sonar-huge-128k-online", temperature=1),prompt=chat_prompt2,verbose=True)
-            return multichain
-        multichain = get_chatassistant_multichain()   
 
-        if str(msgs) != '':  
-            multichain = multichain.run(msgs) 
-        #context = msgs
-        if str(msgs) == '':
-            if talent == "Andrew Ng":
-                multichain = multichain.run("AI")
-            if talent == "Justin":
-                multichain = multichain.run("sports")
-            if talent == "Grimes":
-                multichain = multichain.run("grimes")
-            if talent == "Steph Curry":
-                multichain = multichain.run("basketball")
-            if talent == "Andre Iguodala":
-                multichain = multichain.run("basketball")
-            if talent == "Sofia Vergara":
-                multichain = multichain.run("sofia vergara")
-            if talent == "Draymond Green":
-                multichain = multichain.run("basketball")
-            if talent == "Luka Doncic":
-                multichain = multichain.run("basketball")
 
-        user_text = multichain
-        user_prompt = str(user_text)
 
-        st.chat_message(talent).markdown(user_prompt)
-        st.session_state.messages.append({"role": talent, "content": user_prompt})
-        #IF Video/Audio are ON
-        if on:
-            if talent == "Justin Age 5":
-                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4" }
-                audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")
-            if talent == "Justin":
-                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" } 
-                audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")
-            if talent == "Justin Age 12":
-                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
-                audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")
-            if talent == "Steph Curry":
-                audio=client2.generate(text=multichain, voice='Steph', model="eleven_turbo_v2")
-                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
-            if talent == "Andre Iguodala":
-                audio=client2.generate(text=multichain,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d496b8cd93b3d0b631a7b211aa233771.mp4" }
-            if talent == "Sofia Vergara":
-                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d95182839da7c8c061d37fc7df72bb7a.mp4" }
-                audio=client2.generate(text=multichain,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-            if talent == "Draymond Green":
-                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_9d82a467b223af553b18f18c9ce33e38.mp4" }
-                audio=client2.generate(text=multichain,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-            if talent == "Luka Doncic":
-                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_ef1310293e63a6496d9a396bb45cb973.mp4" }
-                audio=client2.generate(text=multichain,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")
-            path='//home//ubuntu//source//pocdemo//'
-            audio = audio
-            save(audio, path+'OutputChar2.mp3')
-            sound = AudioSegment.from_mp3(path+'OutputChar2.mp3') 
-            song_intro = sound[:30000]
-            song_intro.export(path+'OutputChar2.mp3', format="mp3")  
-            url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
-            files = { "audio_file": (path+"OutputChar2.mp3", open(path+"OutputChar2.mp3", "rb"), "audio/mp3") }
-            headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
-            lipsync = requests.post(url, data=payload, files=files, headers=headers)
-            path_to_response = path+"OutputChar2.mp4"  # Specify the path to save the video response                    path_to_response = path+"Output.mp4"  # Specify the path to save the video response               
-            with open(path_to_response, "wb") as f:
-                f.write(lipsync.content)
-            import cv2 as cv
-            vidcapture = cv.VideoCapture('http://34.133.91.213:8000/OutputChar2.mp4')
-            fps = vidcapture.get(cv.CAP_PROP_FPS)
-            totalNoFrames = vidcapture.get(cv.CAP_PROP_FRAME_COUNT)  
-            durationInSeconds = totalNoFrames / fps    
-            with st.sidebar: 
-                video.empty() 
-                video.empty()
-                html_string3 = """
-                    <video autoplay video width="400">
-                    <source src="http://34.133.91.213:8000/OutputChar2.mp4" type="video/mp4">
-                    </video>
-                    """
-                video.empty()
-                video.markdown(html_string3, unsafe_allow_html=True)
-                time.sleep(durationInSeconds)
-            video.empty()
-            video.markdown(video_html, unsafe_allow_html=True)       
-            if os.path.isfile(path+'OutputChar2.mp4'):
-                os.remove(path+'OutputChar2.mp4')    
-        if audioonly:
-            #ElevelLabs API Call and Return
-            if talent == "Justin":
-                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-            if talent == "Justin Age 12":
-                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-            if talent == "Justin Age 5":
-                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-            #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
-            # Create single bytes object from the returned generator.
-            data = b"".join(audio)
-            ##send data to audio tag in HTML
-            audio_base64 = base64.b64encode(data).decode('utf-8')
-            audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
-            st.markdown(audio_tag, unsafe_allow_html=True)
 # Sidebar Tab 2 and 3 - Tab 2 has the Main Settings, and Tab 3 has the "Zoom" Video Chat
 talent2 = "None"
 with st.sidebar:
@@ -371,19 +206,24 @@ with st.sidebar:
     with tab2:
             st.button('Clear Chat', on_click=ClearChat, key = "123", use_container_width=True)
             on = st.toggle("Video + Audio", value=False)
+            audioonly = st.toggle("Audio Only", value=True)
+            goonline = st.toggle("Online", value=True)
             multichat = st.toggle("Add Second Character", value=False)
-            sync = st.toggle("Sync Text with A/V", value=False)
             VideoHack = st.toggle("Ex-Human Stream Hack", value=False)
             Thinking = st.toggle("Thinking Animation Test", value=False)
-            audioonly = st.toggle("Audio Only", value=True)
-            intro = st.toggle("Intro - Automatic", value=False)
-            introduction = st.toggle("Intro - Pre-Written (Andrew)", value=False)
-            TTS = st.selectbox('What TTS would you like to use?',('Elevenlabs', 'Speechlab'))
-            mode = st.selectbox('What mode would you like to use?',('Normal', 'Roleplay'),key='search_1')
+            sync = st.toggle("Sync Text with A/V (Delay Text Display)", value=False)
+            TextToSpeech = st.selectbox('What TTS would you like to use?',('Elevenlabs', 'SpeechLab'))
+            mode = st.selectbox('Normal/Roleplay Mode',('Normal', 'Roleplay'),key='search_1')
+            mobile = st.toggle("mobile", value=False)
+            videoplace = st.toggle("Fullscreen Video",value=False)
+            
     with tab1:
         if multichat:
             talent2 = st.selectbox('Add Second Character',('Justin Age 12', 'Justin Age 5', 'Justin'))
-
+            def on_change2():
+                st.session_state.search_2 = talent2
+                st.session_state.search_3 = talent                
+            st.button('Swap', on_click=on_change2, key = "023", use_container_width=True)
     with tab3:
             filter = st.selectbox('Video Chat Filter',('none', 'grayscale', 'canny', 'sepia', 'cartoon'))
             #webrtc_ctx = webrtc_streamer(key="WYH",mode=WebRtcMode.SENDRECV,rtc_configuration=RTC_CONFIGURATION,media_stream_constraints={"video": True, "audio": False},async_processing=False, video_frame_callback=transform)
@@ -391,8 +231,489 @@ with st.sidebar:
         userinput = st.text_area("Enter Your Profile 👇", key="5", value = "User has not entered any information, use a generic profile")
         profile=userinput
 
-# News Agent. This calls Perplexity's online model and gathers current news items.
+if videoplace:
+    videoplace="header"
 #############################################################################################################################
+#Video Definition
+#############################################################################################################################
+def StartVideo(cleaned, video, video_html):
+                    
+    #Define the Ex-H and EL Settings
+    if talent == "Justin Age 5":
+        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4", "animation_pipeline": "high_speed" }
+        voice='Justin'
+        model="eleven_turbo_v2"
+    if talent == "Justin":
+        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" } 
+        voice='Justin'
+        model="eleven_turbo_v2"
+    if talent == "Justin Age 12":
+        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" } 
+        voice='Justin'
+        model="eleven_turbo_v2"
+    if talent == "Steph Curry":
+        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
+        voice='Steph'
+        model="eleven_turbo_v2"
+    if talent == "Andre Iguodala":
+        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d496b8cd93b3d0b631a7b211aa233771.mp4" }
+        voice='Andre'
+        model="eleven_turbo_v2"
+    if talent == "Sofia Vergara":
+        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d95182839da7c8c061d37fc7df72bb7a.mp4" }
+        voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True))
+        model="eleven_multilingual_v2"
+    if talent == "Draymond Green":
+        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_9d82a467b223af553b18f18c9ce33e38.mp4" }
+        voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True))
+        model="eleven_multilingual_v2"
+    if talent == "Luka Doncic":
+        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_ef1310293e63a6496d9a396bb45cb973.mp4" }
+        voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True))
+        model="eleven_multilingual_v2"
+    if talent == "Laurence Moroney":
+        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_ac45b9c505252509842fc002e3a5702a.mp4", "animation_pipeline": "high_speed" }
+        voice='Bill'
+        model="eleven_turbo_v2"
+
+    if VideoHack is False:
+        #IF the Video Sync option is OFF, just display the text immediately
+        if sync is False: 
+                cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
+                message_placeholder = st.empty()   
+                message_placeholder.markdown(cleaned) 
+        
+        #Add Thinking Video if it's ON
+        if Thinking is True:
+            with st.sidebar:   
+                video.empty()
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Thinking-Andrew.mp4" type="video/mp4">
+                    </video>
+                    """
+                video = st.empty()
+                video.markdown(html_string, unsafe_allow_html=True)
+
+        #Add Thinking spinner until the text is ready
+        with st.spinner("Thinking..."):
+                
+            #No need to duplicate the Chain call if Sync is OFF
+            if sync is True:
+                cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
+
+            #Define the ElevenLabs Voice Name and Idle MP4 from Ex-Human for each Talent
+            audio=client2.generate(text=cleaned,voice=voice, model=model)
+
+            #Set path for saving Ex-Human MP4 and EL MP3. Change this to File Server Path
+            path='C:\\Users\\HP\\Downloads\\RebexTinyWebServer-Binaries-Latest\\wwwroot\\'
+
+            #SpeechLab's TTS API is below:
+            if TextToSpeech == "SpeechLab":
+                import http.client
+                import json
+                # Login to get the JWT token
+                conn = http.client.HTTPSConnection("translate-api.speechlab.ai")
+                # replace user/password with your login u use for the translate.speechlab.ai app
+                login_payload = json.dumps({"email": "ryan+credits@speechlab.ai","password": "1374Pre96"})
+                login_headers = {'Content-Type': 'application/json'}
+                conn.request("POST", "/v1/auth/login", login_payload, login_headers)
+                login_res = conn.getresponse()
+                login_data = login_res.read()
+                # Parse the response to get the token
+                login_response = json.loads(login_data.decode("utf-8"))
+                token = login_response['tokens']['accessToken']['jwtToken']
+                # Output the login response for debugging
+                print("Login response:", login_response)
+                # Use the token to call the text-to-speech API
+                tts_payload = json.dumps({
+                "text": cleaned})
+                tts_headers = {'Content-Type': 'application/json','Authorization': f'Bearer {token}'}
+                conn.request("POST", "/v1/texttospeeches/generateAndrew", tts_payload, tts_headers)
+                tts_res = conn.getresponse()
+                # Output response headers
+                print(tts_res.getheaders())
+                tts_data = tts_res.read()
+                # Save the audio stream to a file
+                with open(path+"output_audio.mp3", "wb") as f:
+                    f.write(tts_data)
+                print("Audio file saved as output_audio.mp3")
+            
+            #Otherwise run ElevenLabs
+            else:
+                audio = audio
+                save(audio, path+'Output.mp3')
+            
+            #Convert MP3 file to 30 Second MP3 file, since there's a 30 second maximum in Ex-Human..Split into 2 files if it's up to 60 seconds
+            if TextToSpeech == "SpeechLab":
+                sound = AudioSegment.from_mp3(path+'output_audio.mp3')
+            else:
+                sound = AudioSegment.from_mp3(path+'Output.mp3')                          
+            song_30 = sound[:10000]
+            song_60 = sound[10000:40000]
+            song_30.export(path+'Output_30.mp3', format="mp3")   
+            song_60.export(path+'Output_60.mp3', format="mp3")
+            #Set 60 Second Mode to None if the file is under 30 Seconds
+            try:
+                audio60 = AudioSegment.from_file(path+'Output_60.mp3')
+            except:
+                audio60=0 
+                    
+            #Ex-Human convert MP3 file to Lip-Sync Video
+            url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
+            files = { "audio_file": (path+"Output_30.mp3", open(path+"Output_30.mp3", "rb"), "audio/mp3") }
+            files2 = { "audio_file": (path+"Output_60.mp3", open(path+"Output_60.mp3", "rb"), "audio/mp3") }
+            payload = payload
+            headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
+            lipsync = requests.post(url, data=payload, files=files, headers=headers)
+            # Specify the path to save the video response
+            path_to_response = path+"Output.mp4"  
+            
+            #Write the 30 Second file                 
+            with open(path_to_response, "wb") as f:
+                f.write(lipsync.content)
+                    
+            #Lip-Sync MP4 should now be at //home//ubuntu//source//pocdemo//Output.MP4. The HTML File-Host should be on the server: screen -r fileserver
+            #Figure out how long the Lip-Sync Video is
+            import cv2 as cv
+            vidcapture = cv.VideoCapture('http://localhost:1180/Output.mp4')
+            fps = vidcapture.get(cv.CAP_PROP_FPS)
+            totalNoFrames = vidcapture.get(cv.CAP_PROP_FRAME_COUNT)
+            durationInSeconds = totalNoFrames / fps
+                
+        #Add Thinking spinner until the text is ready
+        with st.spinner("Talking..."):
+                
+            #Move the text response to line up with the video response, if the Sync option is ON
+            if sync is True:  
+                    message_placeholder = st.empty()           
+                    message_placeholder.markdown(cleaned) 
+                    
+            #Replace the Idle MP4 with the Lip-Sync Video
+            if videoplace == "header":
+                with header:
+                    video.empty()
+                    html_string = """
+                        <video autoplay video width="600">
+                        <source src="http://localhost:1180/Output.mp4" type="video/mp4">
+                        </video>
+                        """
+                    lipsync = st.empty()
+                    lipsync.markdown(html_string, unsafe_allow_html=True)           
+            else:
+                with st.sidebar:
+                    video.empty()
+                    html_string = """
+                        <video autoplay video width="500">
+                        <source src="http://localhost:1180/Output.mp4" type="video/mp4">
+                        </video>
+                        """
+                    lipsync = st.empty()
+                    lipsync.markdown(html_string, unsafe_allow_html=True)
+                    
+            #Start the Count Up until the next file should play            
+            start = time.time()
+
+            #Generate the 2nd MP4 while the 1st is playing             
+            if audio60 is not 0:
+                lipsync2 = requests.post(url, data=payload, files=files2, headers=headers)
+                path_to_response2 = path+"Output2.mp4"  # Specify the path to save the video response
+                #Also write the 60 second file if it's there
+                with open(path_to_response2, "wb") as f:               
+                    f.write(lipsync2.content)
+                vidcapture2 = cv.VideoCapture('http://localhost:1180/Output2.mp4')
+                fps2 = vidcapture2.get(cv.CAP_PROP_FPS)
+                totalNoFrames2 = vidcapture2.get(cv.CAP_PROP_FRAME_COUNT)
+                durationInSeconds2 = totalNoFrames2 / fps2   
+            #Wait until it's done (Count Down = Total Length - Count Up)         
+            if (10-(time.time() - start))>0:
+                time.sleep(10-(time.time() - start))
+            #Play the 60 Second File if it exists    
+            if audio60 is not 0:
+                    
+                    if videoplace == "header":
+                        with header:
+                            lipsync.empty()
+                            #video.empty()  # optionally delete the element afterwards
+                            html_string = """
+                                <video autoplay video width="600">
+                                <source src="http://localhost:1180/Output2.mp4" type="video/mp4">
+                                </video>
+                                """
+                            lipsync = st.empty()
+                            lipsync.markdown(html_string, unsafe_allow_html=True)
+                    else:
+                        with st.sidebar:                                   
+                            lipsync.empty()
+                            #video.empty()  # optionally delete the element afterwards
+                            html_string = """
+                                <video autoplay video width="500">
+                                <source src="http://localhost:1180/Output2.mp4" type="video/mp4">
+                                </video>
+                                """
+                            lipsync = st.empty()
+                            lipsync.markdown(html_string, unsafe_allow_html=True)
+                    #Wait until it's done, 
+                    time.sleep(durationInSeconds2)
+                    
+            #then return to the Idle Video                           
+            lipsync.empty()
+            video.markdown(video_html, unsafe_allow_html=True)  
+            if os.path.isfile(path+'Output2.mp4'):
+                os.remove(path+'Output2.mp4')               
+    ################################################################################################################################
+    #Video Hack option below, takes LLM response and splits it at the first sentence. 
+    # Runs it through EL and ExH, then does the same with the rest of the LLM response while the first sentence is playing
+    ################################################################################################################################
+    if VideoHack is True:
+        if sync is False:
+            cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
+            #Cut the LLM Response into two Text Files at the First Sentence
+            firstName, lastName = cleaned2.split('.', 1)
+            message_placeholder = st.empty()   
+            message_placeholder.markdown(cleaned) 
+
+        #Add Thinking spinner until the text is ready
+        with st.spinner("Thinking..."):
+            #No need to duplicate the Chain call if Sync is OFF
+            if sync is True:
+                cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
+                firstName, lastName = cleaned2.split('.', 1)
+
+            #Define the ElevenLabs Voice Name and Idle MP4 from Ex-Human for each Talent; Get the First Sentence
+            audio=client2.generate(text=firstName,voice=voice, model=model)
+                                                
+            #Set path for saving Ex-Human MP4 and EL MP3. Change this to File Server Path
+            path='C:\\Users\\HP\\Downloads\\RebexTinyWebServer-Binaries-Latest\\wwwroot\\'
+            #path='//home//ubuntu//source//pocdemo//'
+            save(audio, path+'Output_00.mp3')
+            #Ex-Human convert MP3 file(s) to Lip-Sync Video
+            url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
+            files = { "audio_file": (path+"Output_00.mp3", open(path+"Output_00.mp3", "rb"), "audio/mp3") }
+            payload = payload
+            headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
+            lipsync = requests.post(url, data=payload, files=files, headers=headers)
+            path_to_response = path+"Output.mp4"  # Specify the path to save the video response
+
+            #Write the first file, wait for it to finish
+            with open(path_to_response, "wb") as f:               
+                f.write(lipsync.content)
+            for i in range(10):
+                try:
+                    file = open(path+'Output.mp4')
+                    break
+                except:
+                    time.sleep(1)
+            file.close()
+        #Lip-Sync MP4 should now be at //home//ubuntu//source//pocdemo//Output.MP4. The HTML File-Host should be on the server: screen -r fileserver
+        #Add Talking spinner until done talking
+        with st.spinner("Talking..."):               
+            #Move the text response to line up with the video response, if the Sync option is ON
+            if sync is True:          
+                    message_placeholder.markdown(cleaned)
+            #Play the first MP4 File
+            with st.sidebar:   
+                video.empty()  # optionally delete the element afterwards   
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Output.mp4" type="video/mp4">
+                    </video>
+                    """         
+                lipsync = st.empty()
+                lipsync.markdown(html_string, unsafe_allow_html=True)
+            #Figure out how long the first file is
+            import cv2 as cv
+            vidcapture = cv.VideoCapture('http://localhost:1180/Output.mp4')
+            fps = vidcapture.get(cv.CAP_PROP_FPS)                
+            totalNoFrames = vidcapture.get(cv.CAP_PROP_FRAME_COUNT)
+            durationInSeconds = totalNoFrames / fps
+
+            #Start the Count Up until the next file should play            
+            start = time.time()
+            #Generate the 2nd MP4 while the 1st is playing             
+
+            #Define the ElevenLabs Voice Name and Idle MP4 from Ex-Human for each Talent
+            audio2=client2.generate(text=lastName, voice=voice, model=model) 
+            #Convert MP3 file to 30 Second MP3 file, since there's a 30 second maximum in Ex-Human..Split into 2 files if it's up to 60 seconds
+            save(audio2, path+'Output.mp3')
+            sound = AudioSegment.from_mp3(path+'Output.mp3') 
+            song_30 = sound[:10000]
+            song_60 = sound[10000:40000]
+            song_30.export(path+'Output_30.mp3', format="mp3")   
+            song_60.export(path+'Output_60.mp3', format="mp3")
+            #Set 60 Second Mode to None if the file is under 30 Seconds
+            try:
+                audio60 = AudioSegment.from_file(path+'Output_60.mp3')
+            except:
+                audio60=0
+
+            #Write the 30 second file if it's there
+            files2 = { "audio_file": (path+"Output_30.mp3", open(path+"Output_30.mp3", "rb"), "audio/mp3") }
+            lipsync2 = requests.post(url, data=payload, files=files2, headers=headers)
+            path_to_response2 = path+"Output2.mp4"  # Specify the path to save the video response
+            with open(path_to_response2, "wb") as f:               
+                f.write(lipsync2.content)
+            #Wait until it's done
+            for i in range(10):
+                try:
+                    file = open(path+'Output2.mp4')
+                    break
+                except:
+                    time.sleep(1)
+            file.close()
+
+            #Figure out how long it is
+            vidcapture2 = cv.VideoCapture('http://localhost:1180/Output2.mp4')
+            fps2 = vidcapture2.get(cv.CAP_PROP_FPS)
+            totalNoFrames2 = vidcapture2.get(cv.CAP_PROP_FRAME_COUNT)
+            durationInSeconds2 = totalNoFrames2 / fps2
+            #Wait until it's done (Count Down = Total Length - Count Up)
+            if (durationInSeconds-(time.time() - start))>0:
+                time.sleep(durationInSeconds-(time.time() - start))
+            
+            #Play the 2nd MP4 File if it exists    
+            with st.sidebar:   
+                lipsync.empty()
+                #video.empty()  # optionally delete the element afterwards
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Output2.mp4" type="video/mp4">
+                    </video>
+                    """
+                lipsync = st.empty()
+                lipsync.markdown(html_string, unsafe_allow_html=True)
+                #Wait until it's done, 
+            if audio60 is 0:               
+                time.sleep(durationInSeconds2)
+
+            if audio60 is not 0:
+                #Start the Count Up until the next file should play            
+                start = time.time()
+                
+                #Write the 3rd file if it's there
+                files3 = { "audio_file": (path+"Output_60.mp3", open(path+"Output_60.mp3", "rb"), "audio/mp3") }
+                lipsync3 = requests.post(url, data=payload, files=files3, headers=headers)
+                path_to_response3 = path+"Output3.mp4"  # Specify the path to save the video response
+                with open(path_to_response3, "wb") as f:               
+                    f.write(lipsync3.content)
+                #Wait until it's done
+                for i in range(10):
+                    try:
+                        file = open(path+'Output3.mp4')
+                        break
+                    except:
+                        time.sleep(1)
+                file.close()
+
+                #Figure out how long it is
+                vidcapture3 = cv.VideoCapture('http://localhost:1180/Output3.mp4')
+                fps3 = vidcapture3.get(cv.CAP_PROP_FPS)
+                totalNoFrames3 = vidcapture3.get(cv.CAP_PROP_FRAME_COUNT)
+                durationInSeconds3 = totalNoFrames3 / fps3
+                #Wait until it's done (Count Down = Total Length - Count Up)
+                if (durationInSeconds2-(time.time() - start))>0:
+                    time.sleep(durationInSeconds2-(time.time() - start))
+
+                #Play the 3rd MP4 File if it exists    
+                with st.sidebar:   
+                    lipsync.empty()
+                    #video.empty()  # optionally delete the element afterwards
+                    html_string = """
+                        <video autoplay video width="500">
+                        <source src="http://localhost:1180/Output3.mp4" type="video/mp4">
+                        </video>
+                        """
+                    lipsync = st.empty()
+                    lipsync.markdown(html_string, unsafe_allow_html=True)
+                    #Wait until it's done, 
+                    time.sleep(durationInSeconds3)
+
+            #then return to the Idle Video
+            lipsync.empty()
+            video.markdown(video_html, unsafe_allow_html=True) 
+            if os.path.isfile(path+'Output.mp4'):
+                os.remove(path+'Output.mp4') 
+            if os.path.isfile(path+'Output2.mp4'):
+                os.remove(path+'Output2.mp4')      
+            if os.path.isfile(path+'Output3.mp4'):
+                os.remove(path+'Output3.mp4')     
+
+#############################################################################################################################
+#############################################################################################################################
+#AUDIO DEFINITION
+#############################################################################################################################
+#############################################################################################################################
+def audioon(cleaned):
+        
+    if TextToSpeech == "SpeechLab":
+        path='C:\\Users\\HP\\Downloads\\RebexTinyWebServer-Binaries-Latest\\wwwroot\\'
+
+        import http.client
+        import json
+        # Login to get the JWT token
+        conn = http.client.HTTPSConnection("translate-api.speechlab.ai")
+        # replace user/password with your login u use for the translate.speechlab.ai app
+        login_payload = json.dumps({"email": "ryan+credits@speechlab.ai","password": "1374Pre96"})
+        login_headers = {'Content-Type': 'application/json'}
+        conn.request("POST", "/v1/auth/login", login_payload, login_headers)
+        login_res = conn.getresponse()
+        login_data = login_res.read()
+        # Parse the response to get the token
+        login_response = json.loads(login_data.decode("utf-8"))
+        token = login_response['tokens']['accessToken']['jwtToken']
+        # Output the login response for debugging
+        # print("Login response:", login_response)
+        # Use the token to call the text-to-speech API
+        tts_payload = json.dumps({
+        "text": cleaned})
+        tts_headers = {'Content-Type': 'application/json','Authorization': f'Bearer {token}'}
+        conn.request("POST", "/v1/texttospeeches/generateAndrew", tts_payload, tts_headers)
+        tts_res = conn.getresponse()
+        # Output response headers
+        # print(tts_res.getheaders())
+        tts_data = tts_res.read()
+        # Save the audio stream to a file
+        output_file = path+"output_audio.mp3"
+        with open(output_file, "wb") as f:
+            f.write(tts_data)
+            f.close
+        print(f"Audio file saved as {output_file}") 
+        st.audio(path+"output_audio.mp3", format="audio/mpeg", loop=False)
+            
+    if TextToSpeech == "ElevenLabs":
+        if talent == "Justin Age 5":
+            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+        if talent == "Justin":
+            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+        if talent == "Justin Age 12":
+            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
+        if talent == "Steph Curry":
+            audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
+        if talent == "Andre Iguodala":
+            audio=client2.generate(text=cleaned,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+        if talent == "Sofia Vergara":
+            audio=client2.generate(text=cleaned,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+        if talent == "Draymond Green":
+            audio=client2.generate(text=cleaned,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+        if talent == "Luka Doncic":
+            audio=client2.generate(text=cleaned,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")
+        if talent == "Laurence Moroney":
+            audio=client2.generate(text=cleaned, voice='Bill', model="eleven_turbo_v2")
+
+        # Create single bytes object from the returned generator.
+        data = b"".join(audio)
+
+        ##send data to audio tag in HTML
+        audio_base64 = base64.b64encode(data).decode('utf-8')
+        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
+        st.markdown(audio_tag, unsafe_allow_html=True)
+
+#############################################################################################################################
+#############################################################################################################################
+#############################################################################################################################
+# News Agents. This calls Perplexity's online model and gathers current news items.
+#############################################################################################################################
+
 #LLM News Agent - Suggested Topics - This goes in the 'News' Menu Bar
 template = """You are a helpful assistant in giving 5 of the top news items to talk about around the {text} industry for today. 
 Provide a one sentence explanation of each topic, with a maximum of 15 words"""
@@ -401,75 +722,28 @@ human_template = "{text}"
 human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
 chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
 def get_chatassistant_aitopics():
-    aitopics = LLMChain(
-        llm=ChatPerplexity(model="llama-3.1-sonar-huge-128k-online", temperature=.8),prompt=chat_prompt,verbose=True)
+    aitopics = LLMChain(llm=ChatPerplexity(model="llama-3.1-sonar-huge-128k-online", temperature=.8),prompt=chat_prompt,verbose=True)
     return aitopics
 aitopics = get_chatassistant_aitopics()
 
+# Online Agent. This calls Perplexity's online model and gathers current news items.
+#############################################################################################################################
 
-#LLM News Agent - Intro Message - This goes when the User has Intro turned on
-if intro:
-        templateintro = """First say hello and wish me a good day/evening (if you know what day of the week it is today, mention it in the greeting (Happy Sunday/Monday, ect.)). 
-        Give me one of yesterday's {text} news topics from yesterday in one short sentence. 
-        Then ask the User a simple thought provoking question about that topic.
-        """
-        system_message_prompt = SystemMessagePromptTemplate.from_template(templateintro)
-        human_template = "{text}"
-        human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
-        chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
-        def get_chatassistant_introtopics():
-            introtopics = LLMChain(
-                llm=ChatPerplexity(model="llama-3.1-sonar-huge-128k-online", temperature=0),prompt=chat_prompt,verbose=True)
-            return introtopics
-        introtopics = get_chatassistant_introtopics()
-        if talent == "Justin":
-            responsequestionintro = introtopics.run("Sports")                        
-            audio=client2.generate(text=responsequestionintro, voice='Justin', model="eleven_turbo_v2")
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" }
-        if talent == "Justin Age 12":
-            responsequestionintro = introtopics.run("Sports")                        
-            audio=client2.generate(text=responsequestionintro, voice='Justin', model="eleven_turbo_v2")
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" }
-        if talent == "Justin Age 5":
-            responsequestionintro = introtopics.run("music")                        
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
-            audio=client2.generate(text=responsequestionintro, voice='Justin', model="eleven_turbo_v2")
-        if talent == "Steph Curry":
-            responsequestionintro = introtopics.run("basketball")                        
-            audio=client2.generate(text=responsequestionintro, voice='Steph', model="eleven_turbo_v2")
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
-        if talent == "Andre Iguodala":
-            responsequestionintro = introtopics.run("basketball")                        
-            audio=client2.generate(text=responsequestionintro,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_bebd16918158b36e4ef937a8966b8acc.mp4" }
-        if talent == "Sofia Vergara":
-            responsequestionintro = introtopics.run("sofia vergara")                        
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_a15015e18b377756a26bf9be3f7e6d6d.mp4" }
-            audio=client2.generate(text=responsequestionintro,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-        if talent == "Draymond Green":
-            responsequestionintro = introtopics.run("basketball")                        
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_b8e5fdee090322eb694caa00a7824773.mp4" }
-            audio=client2.generate(text=responsequestionintro,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-        if talent == "Luka Doncic":
-            responsequestionintro = introtopics.run("basketball")                        
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d7d6322031f4965b0738d2fa3b9d663a.mp4" }
-            audio=client2.generate(text=responsequestionintro,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")
-        path='C:\\Users\\HP\\Downloads\\RebexTinyWebServer-Binaries-Latest\\wwwroot\\'
-        audio = audio
-        save(audio, path+'Outputintro.mp3')
-        sound = AudioSegment.from_mp3(path+'Outputintro.mp3') 
-        song_intro = sound[:40000]
-        song_intro.export(path+'Output_intro.mp3', format="mp3")  
-        url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
-        files = { "audio_file": (path+"Output_intro.mp3", open(path+"Output_intro.mp3", "rb"), "audio/mp3") }
-        headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
-        lipsync = requests.post(url, data=payload, files=files, headers=headers)
-        path_to_response = path+"Outputintro.mp4"  # Specify the path to save the video response                    path_to_response = path+"Output.mp4"  # Specify the path to save the video response               
-        with open(path_to_response, "wb") as f:
-            f.write(lipsync.content)
-        if os.path.isfile(path+'Outputintro.mp3'):
-            os.remove(path+'Outputintro.mp3') 
+# Online Agent. This calls Perplexity's online model and gathers current news items.
+template = """Go online and find information related to the question: {text}.
+You are the person named below between, so be sure the result mentions or relates to the person named below, or generally falls within their knowledge:
+If the question is addressed to the first person (your, ect) replace that with the name below.
 
+"""
+system_message_prompt = SystemMessagePromptTemplate.from_template(template+talent)
+human_template = "{text}"
+human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
+
+chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+def get_chatassistant_newstopics():
+    newstopics = LLMChain(llm=ChatPerplexity(model="llama-3.1-sonar-large-128k-online", temperature=0),prompt=chat_prompt,verbose=True)
+    return newstopics
+newstopics = get_chatassistant_newstopics()
 
 # Menu: Suggested Topics CSV - This goes in the Interview Menu
 #############################################################################################################################
@@ -525,7 +799,10 @@ if intro:
 #        NextTopic4 = random.choice(list(fourth_col))
 #    return NextTopic4
 #NextTopic4 = load_data4(QuestionsDoc)
-#############################################################################################################################
+
+
+
+##########################################################################################################################################################################################################################################################           
 
 #Initialize a few things: Chat History, Scenario, Header
 from streamlit_option_menu import option_menu
@@ -533,11 +810,15 @@ from streamlit_option_menu import option_menu
 msgs = StreamlitChatMessageHistory()
 scenario="Random"
 scenario2="<Left Column"
+online = "new"
 header = st.container()
-if talent2=="None":
-    header.title(talent)
-else:
-    header.title(talent+" & "+talent2)
+
+if not mobile:
+    if videoplace != "header":
+        if talent2=="None":
+            header.title(talent)
+        else:
+            header.title(talent+" & "+talent2)
 
 def on_change(key):
     selection = st.session_state[key]
@@ -547,6 +828,10 @@ def on_change(key):
     if selection == "Roleplay":
         st.session_state['mode'] = "Roleplay"
         st.session_state.search_1 = "Roleplay"
+
+
+
+
 #############################################################################################################################
 ##DROPDOWN MENUS
 #############################################################################################################################
@@ -577,15 +862,12 @@ with header:
                         """
                         system_message_prompt = SystemMessagePromptTemplate.from_template(template)
                         human_template = "{text}"
-                        if scenario2 == "<Left Column":
-                            question_template=scenario
-                        question_template=scenario2   
+                        question_template=scenario
                         human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
                         human_message_prompt2 = HumanMessagePromptTemplate.from_template(question_template)
                         chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt, human_message_prompt2])
                         def get_chatassistant_moodchain():
-                            moodchain = LLMChain(
-                                llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
+                            moodchain = LLMChain(llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
                             return moodchain
                         moodchain = get_chatassistant_moodchain()
                         responsemood = moodchain.run(scenario)
@@ -622,129 +904,137 @@ with header:
                         responsememories = memorychain.run(context)
                         st.warning("Current Memories:  \n"+responsememories)
         #########################################################################################################################################################################
-
         # If Normal Mode is ON, show Interview and News (and Mood):
         else:
-            col1, col2, col3 = st.columns([0.3, 0.3, 0.3])
+            if not mobile:
+                col1, col2, col3 = st.columns([0.3, 0.3, 0.3])
+            if mobile:
+                col3, col2, col1 = st.columns([2,1, 1])               
             with col1:
-                #if talent2 == "None":
-                with st.popover("Interview Questions:"):
-                    st.checkbox("Open Ended Questions", disabled=True, help= 'Kick the conversation off with a couple of open-ended questions to get your guest to share their back story')
-                    #st.caption(NextTopic)
-                    st.checkbox("Contextual Questions", help="Asking questions about the guest's experiences (upbringing, education, career path, etc.) can put things in context.")
-                    #st.caption(NextTopic2)
-                    st.checkbox("Personal Anecdotes",help="Ask your guest to share personal stories for a more relatable and engaging discussion.")
-                    #st.caption(NextTopic3)
-                    st.checkbox("Insight and Advice",help= "Glean something thought-provoking from them. Make sure you ask questions that prompt your guest to share their insights and advice on a topic.")
-                    #st.caption(NextTopic4) 
+                if not mobile:
+                        with st.popover("Interview Questions:"):
+                            st.checkbox("Open Ended Questions", disabled=True, help= 'Kick the conversation off with a couple of open-ended questions to get your guest to share their back story')
+                            #st.caption(NextTopic)
+                            st.checkbox("Contextual Questions", help="Asking questions about the guest's experiences (upbringing, education, career path, etc.) can put things in context.")
+                            #st.caption(NextTopic2)
+                            st.checkbox("Personal Anecdotes",help="Ask your guest to share personal stories for a more relatable and engaging discussion.")
+                            #st.caption(NextTopic3)
+                            st.checkbox("Insight and Advice",help= "Glean something thought-provoking from them. Make sure you ask questions that prompt your guest to share their insights and advice on a topic.")
+                            #st.caption(NextTopic4) 
             with col2:
-                #if talent2 == "None":
-                with st.popover("News"):
-                    if talent == "Steph Curry":
-                        @st.cache_data  # 👈 Add the caching decorator
-                        def load_data6(url6):
-                            responsequestion = aitopics.run("NBA")
-                            return responsequestion
-                        responsequestion = load_data6("NBA")
-                        st.markdown(responsequestion)
-                    if talent == "Draymond Green":
-                        @st.cache_data  # 👈 Add the caching decorator
-                        def load_data6(url6):
-                            responsequestion = aitopics.run("NBA")
-                            return responsequestion
-                        responsequestion = load_data6("NBA")
-                        st.markdown(responsequestion)
-                    if talent == "Luka Doncic":
-                        @st.cache_data  # 👈 Add the caching decorator
-                        def load_data6(url6):
-                            responsequestion = aitopics.run("NBA")
-                            return responsequestion
-                        responsequestion = load_data6("NBA")
-                        st.markdown(responsequestion)
-                    if talent == "Andre Iguodala":
-                        @st.cache_data  # 👈 Add the caching decorator
-                        def load_data6(url6):
-                            responsequestion = aitopics.run("NBA")
-                            return responsequestion
-                        responsequestion = load_data6("NBA")
-                        st.markdown(responsequestion)
-                    if talent == "Justin":
-                        @st.cache_data  # 👈 Add the caching decorator
-                        def load_data5(url5):
-                            responsequestion = aitopics.run("Sports")
-                            return responsequestion
-                        responsequestion = load_data5("AI")
-                        st.markdown(responsequestion)
-                    if talent == "Justin Age 12":
-                        @st.cache_data  # 👈 Add the caching decorator
-                        def load_data5(url5):
-                            responsequestion = aitopics.run("Soccer")
-                            return responsequestion
-                        responsequestion = load_data5("Soccer")
-                        st.markdown(responsequestion)
-                    if talent == "Grimes":
-                        @st.cache_data  # 👈 Add the caching decorator
-                        def load_data5(url5):
-                            responsequestion = aitopics.run("Music")
-                            return responsequestion
-                        responsequestion = load_data5("Music")
-                        st.markdown(responsequestion)
-                    if talent == "Sofia Vergara":
-                        @st.cache_data  # 👈 Add the caching decorator
-                        def load_data5(url5):
-                            responsequestion = aitopics.run("Sofia Vergara")
-                            return responsequestion
-                        responsequestion = load_data5("Sofia Vergara")
-                        st.markdown(responsequestion)
+                if not mobile:
+                   with st.popover("News"):
+                            if talent == "Steph Curry":
+                                @st.cache_data  # 👈 Add the caching decorator
+                                def load_data6(url6):
+                                    responsequestion = aitopics.run("NBA")
+                                    return responsequestion
+                                responsequestion = load_data6("NBA")
+                                st.markdown(responsequestion)
+                            if talent == "Draymond Green":
+                                @st.cache_data  # 👈 Add the caching decorator
+                                def load_data6(url6):
+                                    responsequestion = aitopics.run("NBA")
+                                    return responsequestion
+                                responsequestion = load_data6("NBA")
+                                st.markdown(responsequestion)
+                            if talent == "Luka Doncic":
+                                @st.cache_data  # 👈 Add the caching decorator
+                                def load_data6(url6):
+                                    responsequestion = aitopics.run("NBA")
+                                    return responsequestion
+                                responsequestion = load_data6("NBA")
+                                st.markdown(responsequestion)
+                            if talent == "Andre Iguodala":
+                                @st.cache_data  # 👈 Add the caching decorator
+                                def load_data6(url6):
+                                    responsequestion = aitopics.run("NBA")
+                                    return responsequestion
+                                responsequestion = load_data6("NBA")
+                                st.markdown(responsequestion)
+                            if talent == "Justin":
+                                @st.cache_data  # 👈 Add the caching decorator
+                                def load_data5(url5):
+                                    responsequestion = aitopics.run("Sports")
+                                    return responsequestion
+                                responsequestion = load_data5("AI")
+                                st.markdown(responsequestion)
+                            if talent == "Justin Age 12":
+                                @st.cache_data  # 👈 Add the caching decorator
+                                def load_data5(url5):
+                                    responsequestion = aitopics.run("Soccer")
+                                    return responsequestion
+                                responsequestion = load_data5("Soccer")
+                                st.markdown(responsequestion)
+                            if talent == "Grimes":
+                                @st.cache_data  # 👈 Add the caching decorator
+                                def load_data5(url5):
+                                    responsequestion = aitopics.run("Music")
+                                    return responsequestion
+                                responsequestion = load_data5("Music")
+                                st.markdown(responsequestion)
+                            if talent == "Sofia Vergara":
+                                @st.cache_data  # 👈 Add the caching decorator
+                                def load_data5(url5):
+                                    responsequestion = aitopics.run("Sofia Vergara")
+                                    return responsequestion
+                                responsequestion = load_data5("Sofia Vergara")
+                                st.markdown(responsequestion)
+            
+                
+                    
+                        
+                        
+                        
+                        
             with col3:
-                with st.popover("Current Mood"):
-                    #######################################################################################
-                    #MOOD Agent - This LLM call will determine the Mood of the Avatar##
-                      #######################################################################################  
-                    st.title(":smiley:")
-                    #OA Bot##
-                    template = """Your only task is to analyze the current mood based on the text and the conversation. Give me a one sentence explaination of the mood with an emoji to show your mood.  
-                    """
-                    system_message_prompt = SystemMessagePromptTemplate.from_template(template)
-                    human_template = "{text}"
-                    if str(msgs) != '':
-                        question_template=str(msgs)
-                    else:
-                        question_template="good"  
-                    human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
-                    human_message_prompt2 = HumanMessagePromptTemplate.from_template(question_template)
-                    chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt, human_message_prompt2])
-                    def get_chatassistant_moodchain():
-                        moodchain = LLMChain(
-                            llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
-                        return moodchain
-                    moodchain = get_chatassistant_moodchain()
-                    responsemood = moodchain.run(scenario)
-                    st.warning("Current Mood:  \n"+responsemood)
-                    #######################################################################################  
-                    #######################################################################################
-                    #MEMORY Agent - This LLM call will determine the Memories of the Avatar##
-                    ####################################################################################### 
-                    if str(msgs) != '':
-                        template = """Your only task is to analyze the current conversation based on the text. 
-                        Consider the following conversation, and provide a title and one sentence explaination of each memory to summarize the full conversation.
-                        Also rate each memory's poignancy on a scale of 1 to 10. On this scale, 1 represents a completely mundane event (such as brushing teeth or making a bed), while 10 represents an extremely poignant event (such as a break-up or college acceptance). 
-                        Please provide only a numerical value as the output, with a one sentence explaination of the memory to store. An example is: "10: New Girlfriend"
-                        """
-                        system_message_prompt = SystemMessagePromptTemplate.from_template(template)
-                        human_template = "{text}"
-                        human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
-                        chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
-                        def get_chatassistant_memorychain():
-                            memorychain = LLMChain(
-                                llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
-                            return memorychain
-                        memorychain = get_chatassistant_memorychain()
-                        context = msgs
-                        responsememories = memorychain.run(context)
-                        st.warning("Current Memories:  \n"+responsememories)
-
-
+                #if selected2 == "Chat":
+                        with st.popover("Info", use_container_width=True):
+                            #######################################################################################
+                            #MOOD Agent - This LLM call will determine the Mood of the Avatar##
+                            #######################################################################################  
+                            st.title(":smiley:")
+                            #OA Bot##
+                            template = """Your only task is to analyze the current mood based on the text and the conversation. Give me a one sentence explaination of the mood with an emoji to show your mood.  
+                            """
+                            system_message_prompt = SystemMessagePromptTemplate.from_template(template)
+                            human_template = "{text}"
+                            if str(msgs) != '':
+                                question_template=str(msgs)
+                            else:
+                                question_template="good"  
+                            human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
+                            human_message_prompt2 = HumanMessagePromptTemplate.from_template(question_template)
+                            chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt, human_message_prompt2])
+                            def get_chatassistant_moodchain():
+                                moodchain = LLMChain(
+                                    llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
+                                return moodchain
+                            moodchain = get_chatassistant_moodchain()
+                            responsemood = moodchain.run(scenario)
+                            st.warning("Current Mood:  \n"+responsemood)
+                            #######################################################################################  
+                            #######################################################################################
+                            #MEMORY Agent - This LLM call will determine the Memories of the Avatar##
+                            ####################################################################################### 
+                            if str(msgs) != '':
+                                template = """Your only task is to analyze the current conversation based on the text. 
+                                Consider the following conversation, and provide a title and one sentence explaination of each memory to summarize the full conversation.
+                                Also rate each memory's poignancy on a scale of 1 to 10. On this scale, 1 represents a completely mundane event (such as brushing teeth or making a bed), while 10 represents an extremely poignant event (such as a break-up or college acceptance). 
+                                Please provide only a numerical value as the output, with a one sentence explaination of the memory to store. An example is: "10: New Girlfriend"
+                                """
+                                system_message_prompt = SystemMessagePromptTemplate.from_template(template)
+                                human_template = "{text}"
+                                human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
+                                chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+                                def get_chatassistant_memorychain():
+                                    memorychain = LLMChain(
+                                        llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
+                                    return memorychain
+                                memorychain = get_chatassistant_memorychain()
+                                context = msgs
+                                responsememories = memorychain.run(context)
+                                st.warning("Current Memories:  \n"+responsememories)
 
 
 #################################################################################################################################################
@@ -772,17 +1062,27 @@ st.markdown(
 ##############################################################################################################################################################           
 #Talent Default Settings (For LLM, and Idle Video)
 ##############################################################################################################################################################
-#Set up the Idle Video URLs for each Talent
-#if Thinking == "True":
-#    video_html_justin= """<video width="400" autoplay="true" muted="true" loop="true"><source src="http://localhost:1180/Idle-justin.mp4" type="video/mp4" /></video>"""
-video_html_justin= """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" type="video/mp4" /></video>"""
-video_html_justinage12 = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" type="video/mp4" /></video>"""
-video_html_justinage5 = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" type="video/mp4" /></video>"""
-video_html_steph = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" type="video/mp4" /></video>"""
-video_html_sofia = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_a15015e18b377756a26bf9be3f7e6d6d.mp4" type="video/mp4" /></video>"""
-video_html_andre = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_bebd16918158b36e4ef937a8966b8acc.mp4" type="video/mp4" /></video>"""
-video_html_draymond = """<video width="400" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_b8e5fdee090322eb694caa00a7824773.mp4" type="video/mp4" /></video>"""
-video_html_luka = """<video width="400" autoplay="true" muted="true" loop="true"><source src="http://localhost:1180/LukaIdle.mp4" type="video/mp4" /></video>"""
+
+if videoplace == "header":
+    video_html_justin= """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" type="video/mp4" /></video>"""
+    video_html_justinage12 = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" type="video/mp4" /></video>"""
+    video_html_justinage5 = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" type="video/mp4" /></video>"""
+    video_html_steph = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" type="video/mp4" /></video>"""
+    video_html_sofia = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_d95182839da7c8c061d37fc7df72bb7a.mp4" type="video/mp4" /></video>"""
+    video_html_andre = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_d496b8cd93b3d0b631a7b211aa233771.mp4" type="video/mp4" /></video>"""
+    video_html_draymond = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_9d82a467b223af553b18f18c9ce33e38.mp4" type="video/mp4" /></video>"""
+    video_html_luka = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_ef1310293e63a6496d9a396bb45cb973.mp4" type="video/mp4" /></video>"""
+    video_html_laurence = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_ac45b9c505252509842fc002e3a5702a.mp4f" type="video/mp4" /></video>"""
+else:
+    video_html_justin= """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" type="video/mp4" /></video>"""
+    video_html_justinage12 = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" type="video/mp4" /></video>"""
+    video_html_justinage5 = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" type="video/mp4" /></video>"""
+    video_html_steph = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" type="video/mp4" /></video>"""
+    video_html_sofia = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_d95182839da7c8c061d37fc7df72bb7a.mp4" type="video/mp4" /></video>"""
+    video_html_andre = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_d496b8cd93b3d0b631a7b211aa233771.mp4" type="video/mp4" /></video>"""
+    video_html_draymond = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_9d82a467b223af553b18f18c9ce33e38.mp4" type="video/mp4" /></video>"""
+    video_html_luka = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_ef1310293e63a6496d9a396bb45cb973.mp4" type="video/mp4" /></video>"""
+    video_html_laurence = """<video width="500" autoplay="true" muted="true" loop="true"><source src="https://ugc-idle.s3-us-west-2.amazonaws.com/est_ac45b9c505252509842fc002e3a5702a.mp4" type="video/mp4" /></video>"""
 
 #Multi-Chat Idle Video Settings#
 if talent2 == "Sofia Vergara":
@@ -819,9 +1119,16 @@ if talent == "Justin":
             else:
                 model = st.selectbox('',('llama-3.1-70b-instruct', 'mixtral-8x7b-32768', 'claude-3-opus-20240229' ,'gpt-4o'))
             TSS = '',('ElevenLabs', 'Cartesia')
-        video = st.empty()
-        video_html=video_html_justin
-        video.markdown(video_html, unsafe_allow_html=True)
+    if videoplace == "header": 
+        with header:
+            video = st.empty()
+            video_html=video_html_justin
+            video.markdown(video_html, unsafe_allow_html=True)
+    else:
+        with st.sidebar:
+            video = st.empty()
+            video_html=video_html_justin
+            video.markdown(video_html, unsafe_allow_html=True)
 #JustinSidebar Settings#
 
 #Justin Sidebar Settings#
@@ -832,9 +1139,16 @@ if talent == "Justin Age 5":
                 model = st.selectbox('',('claude-3-opus-20240229','llama-3.1-70b-instruct','gpt-4o', 'mixtral-8x7b-32768'))
             else:
                 model = st.selectbox('',('llama-3.1-70b-instruct', 'mixtral-8x7b-32768', 'claude-3-opus-20240229' ,'gpt-4o'))
-        video = st.empty()
-        video_html=video_html_justinage5       
-        video.markdown(video_html, unsafe_allow_html=True)  
+    if videoplace == "header": 
+        with header:
+            video = st.empty()
+            video_html=video_html_justinage5
+            video.markdown(video_html, unsafe_allow_html=True)
+    else:
+        with st.sidebar:
+            video = st.empty()
+            video_html=video_html_justinage5
+            video.markdown(video_html, unsafe_allow_html=True)
     template="prompt_template_justinage5"
 #Grimes Sidebar Settings#
 
@@ -846,9 +1160,16 @@ if talent == "Justin Age 12":
                 model = st.selectbox('',('claude-3-opus-20240229','llama-3.1-70b-instruct','gpt-4o', 'mixtral-8x7b-32768'))
             else:
                 model = st.selectbox('',('llama-3.1-70b-instruct', 'mixtral-8x7b-32768', 'claude-3-opus-20240229' ,'gpt-4o'))  
-        video = st.empty()
-        video_html=video_html_justinage12        
-        video.markdown(video_html, unsafe_allow_html=True)  
+    if videoplace == "header": 
+        with header:
+            video = st.empty()
+            video_html=video_html_justinage12
+            video.markdown(video_html, unsafe_allow_html=True)
+    else:
+        with st.sidebar:
+            video = st.empty()
+            video_html=video_html_justinage12
+            video.markdown(video_html, unsafe_allow_html=True)
     template="prompt_template_justinage12"
 #Ronaldo Sidebar Settings#
 
@@ -921,6 +1242,59 @@ if talent == "Sofia Vergara":
         video.markdown(video_html, unsafe_allow_html=True)  
     template="prompt_template_sofia"
 #Sofia Sidebar Settings#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #################################################################################################################################################################
@@ -1342,27 +1716,69 @@ if scenario == "Classroom_Week_2":
 if scenario == "Classroom_Week_3":
     card=Classroom_Week_3
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ######################################################################################################################################
 ######PROMPT CHAINS############################################################################
 ##############################################################################################################################################
 #Prompt Chains: We combine the Mode's Prompt + Character and/or Scenario Card
 if mode == 'Roleplay': 
-    Prompt_GPT = PromptTemplate(template=prompt_template_roleplayrules+character+card, input_variables=["question", "context", "chat_history"])
-    Prompt_Llama = PromptTemplate(template=prompt_template_roleplayrules+character+card, input_variables=["question", "context", "chat_history"])
-    Prompt_Claude = PromptTemplate(template=prompt_template_roleplayrules+character+card, input_variables=["question", "context", "system", "chat_history"])
+    Prompt_GPT = PromptTemplate(template=prompt_template_roleplayrules+character+card+profile, input_variables=["question", "context", "chat_history"])
+    Prompt_Llama = PromptTemplate(template=prompt_template_roleplayrules+character+card+profile, input_variables=["question", "context", "chat_history"])
+    Prompt_Claude = PromptTemplate(template=prompt_template_roleplayrules+character+card+profile, input_variables=["question", "context", "system", "chat_history"])
 if mode == 'Normal':
     if talent == "Justin":
-        Prompt_GPT = PromptTemplate(template=prompt_template_justin, input_variables=["question", "context", "chat_history"])
-        Prompt_Llama = PromptTemplate(template=prompt_template_justin, input_variables=["question", "context", "chat_history"])
-        Prompt_Claude = PromptTemplate(template=prompt_template_justin, input_variables=["question", "context", "system", "chat_history"])    
+        Prompt_GPT = PromptTemplate(template=prompt_template_justin+profile, input_variables=["question", "context", "chat_history"])
+        Prompt_Llama = PromptTemplate(template=prompt_template_justin+profile, input_variables=["question", "context", "chat_history"])
+        Prompt_Claude = PromptTemplate(template=prompt_template_justin+profile, input_variables=["question", "context", "system", "chat_history"])    
     else:
-        Prompt_GPT = PromptTemplate(template=prompt_template_generic+character, input_variables=["question", "context", "chat_history"])
-        Prompt_Llama = PromptTemplate(template=prompt_template_generic+character, input_variables=["question", "context", "chat_history"])
-        Prompt_Claude = PromptTemplate(template=prompt_template_generic+character, input_variables=["question", "context", "system", "chat_history"])
+        Prompt_GPT = PromptTemplate(template=prompt_template_generic+character+profile, input_variables=["question", "context", "chat_history"])
+        Prompt_Llama = PromptTemplate(template=prompt_template_generic+character+profile, input_variables=["question", "context", "chat_history", "human_input"])
+        Prompt_Claude = PromptTemplate(template=prompt_template_generic+character+profile, input_variables=["question", "context", "system", "chat_history"])
 
 # Add in Chat Memory
 msgs = StreamlitChatMessageHistory()
-memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, return_docs=False, chat_memory=msgs, output_key='answer')
+memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, return_docs=False, chat_memory=msgs, output_key='answer', input_key="human_input")
 
 #Not being used, but potential Agent to rephrase the User's question##
 #memory=ConversationBufferMemory(memory_key="chat_history", return_docs=False
@@ -1448,16 +1864,8 @@ def get_chatassistant_chain_GPT_PPX():
     return chain_GPT_PPX
 chain_GPT_PPX = get_chatassistant_chain_GPT_PPX()
 
-#Google generate# Disabled, since the Auth isn't working on the server
-#def get_chatassistant_chain_Google():
-#    embeddings = OpenAIEmbeddings()
-#    vectorstore = PineconeVectorStore(index_name=index_name, embedding=embeddings)
-#    set_debug(True)
-#    #llm_Google = VertexAIModelGarden(project="planar-oasis-413918", endpoint_id="YOUR ENDPOINT_ID")
-#    llm_Google = VertexAI(model_name="gemini-1.5-pro-preview-0409", max_output_tokens=1000, temperature=0.3, project="planar-oasis-413918")
-#    chain_Google=ConversationalRetrievalChain.from_llm(llm=llm_Google, retriever=vectorstore.as_retriever(),memory=memory, combine_docs_chain_kwargs={"prompt": Prompt_Llama})
-#    return chain_Google
-#chain_Google = get_chatassistant_chain_Google()
+
+
 
 #Define what chain to run based on the model selected
 if model == "gpt-4o":
@@ -1472,6 +1880,7 @@ if model == "mixtral-8x7b-32768":
 #################################################################################################################################################################
 #Follow-Up Question AGENT##
 #################################################################################################################################################################
+
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import (ChatPromptTemplate,SystemMessagePromptTemplate,HumanMessagePromptTemplate,)
 from langchain.chains import LLMChain, ConversationChain
@@ -1490,9 +1899,11 @@ def get_chatassistant_questionchain():
         llm=ChatOpenAI(model="gpt-4o", temperature=1),prompt=chat_prompt,verbose=True)
     return questionchain
 questionchain = get_chatassistant_questionchain()
+
 #################################################################################################################################################################
 #DM or Narrator AGENT##
 #################################################################################################################################################################
+
 if mode == "Roleplay":
     #OA Bot##
     from langchain.chat_models import ChatOpenAI
@@ -1504,7 +1915,6 @@ if mode == "Roleplay":
 
     Describe the next action in 1-2 sentences, the action can not include the User or the Character, and must be short.
     Ensure the story remains engaging and moves forward, avoiding stagnation.
-
     """
     system_message_prompt = SystemMessagePromptTemplate.from_template(template)
     human_template = "{text}"
@@ -1518,14 +1928,12 @@ if mode == "Roleplay":
             llm=ChatGroq(api_key=GROQ_API_KEY, model="llama3-70b-8192", temperature=1), prompt=chat_prompt,verbose=True)
         return dmchain
     dmchain = get_chatassistant_dmchain()
+        
 #################################################################################################################################################################
 # Chat ########################################################################################################################################################## 
 #################################################################################################################################################################
 #################################################################################################################################################################
-################################################################################################################################################################# 
-#################################################################################################################################################################
-#################################################################################################################################################################
-# Chat Flow
+
 #FIRST MESSAGE###############################################
 #If it's roleplay, set the stage with a Message from the Card
 if mode == "Roleplay":
@@ -1533,489 +1941,64 @@ if mode == "Roleplay":
     st.warning(res)
 
 #Play the Intro or News if the Setting exists
-if "messages" not in st.session_state:
-    #st.session_state.messages = []
-    if intro:
-        st.session_state.messages = [{"role": "assistant", "content": responsequestionintro}]    
-        with st.sidebar:   
-            video.empty()  # optionally delete the element afterwards   
-            html_string = """
-                <video autoplay video width="400">
-                <source src="http://localhost:1180/Outputintro.mp4" type="video/mp4">
-                </video>
-                """         
-            lipsync = st.empty()
-            lipsync.markdown(html_string, unsafe_allow_html=True)
-            time.sleep(25)
-            lipsync.empty()
-            video.markdown(video_html, unsafe_allow_html=True)
-    #if introduction:
-    #    st.session_state.messages = [{"role": "assistant", "content": "Hello there, this is the Real Avatar of Justin. You're not speaking directly to justin, but a digital representation that has been trained on justin's writing. What would you like to discuss today?"}]    
-    #    with st.sidebar:   
-    #        video.empty()  # optionally delete the element afterwards   
-    #        html_string = """
-    #            <video autoplay video width="400">
-    #            <source src="http://localhost:1180/Output22.mp4" type="video/mp4">
-    #            </video>
-    #            """         
-    #        lipsync = st.empty()
-    #        lipsync.markdown(html_string, unsafe_allow_html=True)
-    #        time.sleep(25)
-    #        lipsync.empty()
-    #        video.markdown(video_html, unsafe_allow_html=True)
-    #Otherwise the first message can be generic:
-    else:
-        if mode == "Roleplay":
-            st.session_state.messages = [{"role": "assistant", "content": "Send a message to begin"}]    
-        else:
-            st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
+#if "messages" not in st.session_state:
 
+if str(msgs) == '':
+    if talent == "Justin":
+        st.session_state.messages = [{"role": "assistant", "content": "Hey this is Justin, it's great to meet you! I'm excited to talk to you about music, technology, or anything else you're interested in. What's on your mind?"}]
+    if talent == "Justin Age 12":
+        st.session_state.messages = [{"role": "assistant", "content": "Hey this is Justin, it's great to meet you! I'm excited to talk to you about music, technology, or anything else you're interested in. What's on your mind?"}]
+    if talent == "Justin Age 5":
+        st.session_state.messages = [{"role": "assistant", "content": "Hey this is Justin, it's great to meet you! I'm excited to talk to you about music, technology, or anything else you're interested in. What's on your mind?"}]
+    if talent == "Steph Curry":
+        st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Steph Curry! It's great to meet you, and I'm excited to talk with you about basketball or anything else you're interested in. What's on your mind?"}]
+    if talent == "Andre Iguodala":
+        st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Andre Iguodala! It's great to meet you, and I'm excited to talk with you about basketball or anything else you're interested in. What's on your mind?"}]
+    if talent == "Sofia Vergara":
+        st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Sofia Vergara! It's great to meet you, and I'm excited to talk with you about my latest projects or anything else you're interested in. What's on your mind?"}]
+    if talent == "Draymond Green":
+        st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Draymond Green! It's great to meet you, and I'm excited to talk with you about basketball or anything else you're interested in. What's on your mind?"}]
+    if talent == "Luka Doncic":
+        st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Luka Doncic! It's great to meet you, and I'm excited to talk with you about basketball or anything else you're interested in. What's on your mind?"}]
+    if talent == "Laurence Moroney":
+        st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Laurence Moroney! I can talk with you about AI, machine learning and their applications. I'm excited to learn more about your current projects and interests in this field. Tell me more about yourself and where you are in your career."}]
 
 #CHAT MESSAGES##############################################################
 ############################################################################
 #Start the Chat! This is the For Loop for ever message that is sent:
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-##########################################################################################################################################
-#Multi-Chat Question######################################################################################################################
-##########################################################################################################################################
-def AddSteph():
-    #Chain for the Multi-Chat AI to chime in   
-    multi_question_template = """
-    Determine your dialog for the next line in this chat, based on the last message. 
-    You're entering into a 3 person chat with the User and another AI, so don't get confused about the tenses that you see in the context.
-    The format should only include your line (no formatting, quotes or other text). It should be short (less than 2-3 sentences and 100 tokens!).
-
-    Try to provide value to the conversation based on your persona and knowledge! You care character2 below:
-    """
-    if mode == "Roleplay":
-        system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+character2+card)
-    else:
-        system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+character2)
-    human_message_prompt = HumanMessagePromptTemplate.from_template("{text}")
-    chat_prompt2 = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
-    def get_chatassistant_multichain():
-        multichain = LLMChain(
-            llm=ChatGroq(api_key=GROQ_API_KEY, model="llama3-70b-8192", temperature=1),prompt=chat_prompt2,verbose=True)
-        return multichain
-    multichain = get_chatassistant_multichain()   
-    context = msgs
-    multichain = multichain.run(context)
-
-    st.session_state.messages.append({"role": talent2, "content": multichain})
-    #with st.chat_message("user"):
-    #    st.markdown(multichain)
-    #IF Video/Audio are ON
-    if on:
-        if talent2 == "Justin":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" }
-            audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")                              
-        if talent2 == "Justin Age 12":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" } 
-            audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")
-        if talent2 == "Justin Age 5":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
-            audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")
-        if talent2 == "Steph Curry":
-            audio=client2.generate(text=multichain, voice='Steph', model="eleven_turbo_v2")
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
-        if talent2 == "Andre Iguodala":
-            audio=client2.generate(text=multichain,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_bebd16918158b36e4ef937a8966b8acc.mp4" }
-        if talent2 == "Sofia Vergara":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_a15015e18b377756a26bf9be3f7e6d6d.mp4" }
-            audio=client2.generate(text=multichain,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-        if talent2 == "Draymond Green":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_b8e5fdee090322eb694caa00a7824773.mp4" }
-            audio=client2.generate(text=multichain,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-        if talent2 == "Luka Doncic":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d7d6322031f4965b0738d2fa3b9d663a.mp4" }
-            audio=client2.generate(text=multichain,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")
-        path='C:\\Users\\HP\\Downloads\\RebexTinyWebServer-Binaries-Latest\\wwwroot\\'
-        audio = audio
-        save(audio, path+'OutputChar2.mp3')
-        sound = AudioSegment.from_mp3(path+'OutputChar2.mp3') 
-        song_intro = sound[:40000]
-        song_intro.export(path+'OutputChar2.mp3', format="mp3")  
-        url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
-        files = { "audio_file": (path+"OutputChar2.mp3", open(path+"OutputChar2.mp3", "rb"), "audio/mp3") }
-        headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
-        lipsync = requests.post(url, data=payload, files=files, headers=headers)
-        path_to_response = path+"OutputChar2.mp4"  # Specify the path to save the video response                    path_to_response = path+"Output.mp4"  # Specify the path to save the video response               
-        with open(path_to_response, "wb") as f:
-            f.write(lipsync.content)
-        import cv2 as cv
-        vidcapture = cv.VideoCapture('http://localhost:1180/OutputChar2.mp4')
-        fps = vidcapture.get(cv.CAP_PROP_FPS)
-        totalNoFrames = vidcapture.get(cv.CAP_PROP_FRAME_COUNT)  
-        durationInSeconds = totalNoFrames / fps    
-        with st.sidebar: 
-            lipsync22 = st.empty()  
-            lipsync22.empty()
-            html_string3 = """
-                <video autoplay video width="400">
-                <source src="http://localhost:1180/OutputChar2.mp4" type="video/mp4">
-                </video>
-                """
-            lipsync22 = st.empty()
-            lipsync22.markdown(html_string3, unsafe_allow_html=True)
-            time.sleep(durationInSeconds)
-        lipsync22.empty()
-        video.markdown(video_html2, unsafe_allow_html=True)       
-        if os.path.isfile(path+'OutputChar2.mp4'):
-            os.remove(path+'OutputChar2.mp4') 
-    if audioonly:
-        #ElevelLabs API Call and Return
-        if talent == "Justin":
-                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-        if talent == "Justin Age 12":
-                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-        if talent == "Justin Age 5":
-                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-        #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
-        # Create single bytes object from the returned generator.
-        data = b"".join(audio)
-        ##send data to audio tag in HTML
-        audio_base64 = base64.b64encode(data).decode('utf-8')
-        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
-        st.markdown(audio_tag, unsafe_allow_html=True)
-    #Write the Text Message
-    st.session_state.messages.append({"role": talent2, "content": multichain})
-
-##########################################################################################################################################
-#Multi-Chat Question to Answer (Bot to Bot)###############################################################################################
-##########################################################################################################################################
-def AISteph():
-        with st.chat_message("user"):
-            #Run the first bot's message (as "user"):
-            multichain = AddSteph()
-            user_text = multichain
-            user_prompt = str(user_text)
-
-        #Then run the second bot's response:    
-        with st.chat_message("assistant", avatar=assistant_logo):
-            #Add Thinking spinner until the text is ready
-            with st.spinner("Thinking..."):
-                message_placeholder = st.empty()              
-                response = chain.invoke({"question": user_prompt})
-                text = str(response['answer'])
-                cleaned = re.sub(r'\*.*?\*', '', text)   
-                cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
-                message_placeholder.markdown(cleaned)
-                # If Audio/Video are ON
-                if on:
-                    if talent == "Justin":
-                        audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" }
-                    if talent == "Justin Age 12":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" } 
-                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                    if talent == "Justin Age 5":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
-                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                    if talent == "Steph Curry":
-                        audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
-                    if talent == "Andre Iguodala":
-                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_bebd16918158b36e4ef937a8966b8acc.mp4" }
-                    if talent == "Sofia Vergara":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_a15015e18b377756a26bf9be3f7e6d6d.mp4" }
-                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                    if talent == "Draymond Green":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_b8e5fdee090322eb694caa00a7824773.mp4" }
-                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                    if talent == "Luka Doncic":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d7d6322031f4965b0738d2fa3b9d663a.mp4" }
-                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")                       
-                    #Set path for saving Ex-Human MP4 and EL MP3. Change this to File Server Path
-                    path='C:\\Users\\HP\\Downloads\\RebexTinyWebServer-Binaries-Latest\\wwwroot\\'
-                     #Convert MP3 file to 30 Second MP3 file, since there's a 30 second maximum in Ex-Human..Split into 2 files if it's up to 60 seconds
-                    audio = audio
-                    save(audio, path+'Output.mp3')
-                    sound = AudioSegment.from_mp3(path+'Output.mp3') 
-                    song_30 = sound[:10000]
-                    song_60 = sound[10000:40000]
-                    song_30.export(path+'Output_30.mp3', format="mp3")   
-                    song_60.export(path+'Output_60.mp3', format="mp3")
-                    #Set 60 Second Mode to None if the file is under 30 Seconds
-                    try:
-                        audio60 = AudioSegment.from_file(path+'Output_60.mp3')
-                    except:
-                        audio60=0 
-
-                    #Ex-Human convert MP3 file to Lip-Sync Video
-                    url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
-                    files = { "audio_file": (path+"Output_30.mp3", open(path+"Output_30.mp3", "rb"), "audio/mp3") }
-                    files2 = { "audio_file": (path+"Output_60.mp3", open(path+"Output_60.mp3", "rb"), "audio/mp3") }
-                    payload = payload
-                    headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
-                    lipsync = requests.post(url, data=payload, files=files, headers=headers)
-                    path_to_response = path+"Output.mp4"  # Specify the path to save the video response                    path_to_response = path+"Output.mp4"  # Specify the path to save the video response
-                                    
-                    with open(path_to_response, "wb") as f:
-                        f.write(lipsync.content)
-                            
-                    #Lip-Sync MP4 should now be on server. The HTML File-Host should be on the server: screen -r fileserver
-                    #Figure out how long the Lip-Sync Video is
-                    import cv2 as cv
-                    vidcapture = cv.VideoCapture('http://localhost:1180/Output.mp4')
-                    fps = vidcapture.get(cv.CAP_PROP_FPS)
-                    totalNoFrames = vidcapture.get(cv.CAP_PROP_FRAME_COUNT)
-                    durationInSeconds = totalNoFrames / fps                       
-                    #Add Thinking spinner until the text is ready
-                    with st.spinner("Talking..."):                            
-                        #Replace the Idle MP4 with the Lip-Sync Video
-                        with st.sidebar:   
-                            #video.empty()
-                            html_string = """
-                                <video autoplay video width="400">
-                                <source src="http://localhost:1180/Output.mp4" type="video/mp4">
-                                </video>
-                                """
-                            lipsync = st.empty()
-                            lipsync.markdown(html_string, unsafe_allow_html=True)                              
-                            #Start the Count Up until the next file should play            
-                            start = time.time()
-                        #Generate the 2nd MP4 while the 1st is playing             
-                        if audio60 is not 0:
-                            lipsync2 = requests.post(url, data=payload, files=files2, headers=headers)
-                            path_to_response2 = path+"Output2.mp4"  # Specify the path to save the video response
-                            #Also write the 60 second file if it's there
-                            with open(path_to_response2, "wb") as f:               
-                                f.write(lipsync2.content)
-                            vidcapture2 = cv.VideoCapture('http://localhost:1180/Output2.mp4')
-                            fps2 = vidcapture2.get(cv.CAP_PROP_FPS)
-                            totalNoFrames2 = vidcapture2.get(cv.CAP_PROP_FRAME_COUNT)
-                            durationInSeconds2 = totalNoFrames2 / fps2   
-                        #Wait until it's done (Count Down = Total Length - Count Up)         
-                        time.sleep(10-(time.time() - start))                      
-                        #Play the 60 Second File if it exists    
-                        if audio60 is not 0:
-                                with st.sidebar:                                   
-                                    lipsync.empty()
-                                    #video.empty()  # optionally delete the element afterwards
-                                    html_string = """
-                                        <video autoplay video width="400">
-                                        <source src="http://localhost:1180/Output2.mp4" type="video/mp4">
-                                        </video>
-                                        """
-                                    lipsync = st.empty()
-                                    lipsync.markdown(html_string, unsafe_allow_html=True)
-                                    #Wait until it's done, 
-                                    time.sleep(durationInSeconds2)                                
-                        #then return to the Idle Video                           
-                        lipsync.empty()
-                        video.markdown(video_html, unsafe_allow_html=True)  
-                        if os.path.isfile(path+'Output2.mp4'):
-                            os.remove(path+'Output2.mp4')
-                    if audioonly:
-                        #ElevelLabs API Call and Return
-                        if talent == "Justin":
-                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                        if talent == "Justin Age 12":
-                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                        if talent == "Justin Age 5":
-                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                        #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
-                        # Create single bytes object from the returned generator.
-                        data = b"".join(audio)
-                        ##send data to audio tag in HTML
-                        audio_base64 = base64.b64encode(data).decode('utf-8')
-                        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
-                        st.markdown(audio_tag, unsafe_allow_html=True)
-                st.session_state.messages.append({"role": "assistant", "content": response['answer']})
-                
-##########################################################################################################################################
-#Multi-Chat Question to Answer (User to Bot)###############################################################################################
-##########################################################################################################################################
-def AddYour():
-        multi_question_template = """
-        Determine your dialog for the next line in this chat, based on the last message. You are the User.
-        Keep your question short (no longer than 100 characters)
-        """
-        if mode == "Roleplay":
-            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+card+profile)
-        else:
-            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+profile)
-        human_message_prompt = HumanMessagePromptTemplate.from_template("{text}")
-        chat_prompt2 = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
-        def get_chatassistant_multichain():
-            multichain = LLMChain(
-                llm=ChatGroq(api_key=GROQ_API_KEY, model="llama3-70b-8192", temperature=1),prompt=chat_prompt2,verbose=True)
-            return multichain
-        multichain = get_chatassistant_multichain()   
-        context = msgs
-        multichain = multichain.run(context)
-        user_text = multichain
-        user_prompt = str(user_text)
-
-        st.chat_message("user").markdown(user_prompt)
-        st.session_state.messages.append({"role": "user", "content": user_prompt})
-
-        #Then run the second bot's response:    
-        with st.chat_message("assistant", avatar=assistant_logo):
-            #Add Thinking spinner until the text is ready
-            #with st.spinner("Thinking..."):
-                message_placeholder = st.empty()              
-                response = chain.invoke({"question": user_prompt})
-                text = str(response['answer'])
-                cleaned = re.sub(r'\*.*?\*', '', text)   
-                cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
-                message_placeholder.markdown(cleaned)
-                # If Audio/Video are ON
-                if on:
-                    if talent == "Justin":
-                        audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4" }
-                    if talent == "Justin Age 12":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f6ab107ab97da5cefd33b812e9a72caa.mp4" } 
-                        audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
-                    if talent == "Justin Age 5":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
-                        audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
-                    if talent == "Steph Curry":
-                        audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
-                    if talent == "Andre Iguodala":
-                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d496b8cd93b3d0b631a7b211aa233771.mp4" }
-                    if talent == "Sofia Vergara":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d95182839da7c8c061d37fc7df72bb7a.mp4" }
-                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                    if talent == "Draymond Green":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_9d82a467b223af553b18f18c9ce33e38.mp4" }
-                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                    if talent == "Luka Doncic":
-                        payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_ef1310293e63a6496d9a396bb45cb973.mp4" }
-                        audio=client2.generate(text=cleaned,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")                       
-                    #Set path for saving Ex-Human MP4 and EL MP3. Change this to File Server Path
-                    path='//home//ubuntu//source//pocdemo//'
-                     #Convert MP3 file to 30 Second MP3 file, since there's a 30 second maximum in Ex-Human..Split into 2 files if it's up to 60 seconds
-                    audio = audio
-                    save(audio, path+'Output.mp3')
-                    sound = AudioSegment.from_mp3(path+'Output.mp3') 
-                    song_30 = sound[:10000]
-                    song_60 = sound[10000:40000]
-                    song_30.export(path+'Output_30.mp3', format="mp3")   
-                    song_60.export(path+'Output_60.mp3', format="mp3")
-                    #Set 60 Second Mode to None if the file is under 30 Seconds
-                    try:
-                        audio60 = AudioSegment.from_file(path+'Output_60.mp3')
-                    except:
-                        audio60=0 
-
-                    #Ex-Human convert MP3 file to Lip-Sync Video
-                    url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
-                    files = { "audio_file": (path+"Output_30.mp3", open(path+"Output_30.mp3", "rb"), "audio/mp3") }
-                    files2 = { "audio_file": (path+"Output_60.mp3", open(path+"Output_60.mp3", "rb"), "audio/mp3") }
-                    payload = payload
-                    headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
-                    lipsync = requests.post(url, data=payload, files=files, headers=headers)
-                    path_to_response = path+"Output.mp4"  # Specify the path to save the video response                    path_to_response = path+"Output.mp4"  # Specify the path to save the video response
-                                    
-                    with open(path_to_response, "wb") as f:
-                        f.write(lipsync.content)
-                            
-                    #Lip-Sync MP4 should now be on server. The HTML File-Host should be on the server: screen -r fileserver
-                    #Figure out how long the Lip-Sync Video is
-                    import cv2 as cv
-                    vidcapture = cv.VideoCapture('http://34.133.91.213:8000/Output.mp4')
-                    fps = vidcapture.get(cv.CAP_PROP_FPS)
-                    totalNoFrames = vidcapture.get(cv.CAP_PROP_FRAME_COUNT)
-                    durationInSeconds = totalNoFrames / fps                       
-                    #Add Thinking spinner until the text is ready
-                    #with st.spinner("Talking..."):                            
-                    #Replace the Idle MP4 with the Lip-Sync Video
-                    with st.sidebar:   
-                        video.empty()
-                        html_string = """
-                            <video autoplay video width="400">
-                            <source src="http://34.133.91.213:8000/Output.mp4" type="video/mp4">
-                            </video>
-                            """
-                        lipsync = st.empty()
-                        lipsync.markdown(html_string, unsafe_allow_html=True)                              
-                        #Start the Count Up until the next file should play            
-                        start = time.time()
-                    #Generate the 2nd MP4 while the 1st is playing             
-                    if audio60 is not 0:
-                        lipsync2 = requests.post(url, data=payload, files=files2, headers=headers)
-                        path_to_response2 = path+"Output2.mp4"  # Specify the path to save the video response
-                        #Also write the 60 second file if it's there
-                        with open(path_to_response2, "wb") as f:               
-                            f.write(lipsync2.content)
-                        vidcapture2 = cv.VideoCapture('http://34.133.91.213:8000/Output2.mp4')
-                        fps2 = vidcapture2.get(cv.CAP_PROP_FPS)
-                        totalNoFrames2 = vidcapture2.get(cv.CAP_PROP_FRAME_COUNT)
-                        durationInSeconds2 = totalNoFrames2 / fps2   
-                    #Wait until it's done (Count Down = Total Length - Count Up)         
-                    time.sleep(10-(time.time() - start))                      
-                    #Play the 60 Second File if it exists    
-                    if audio60 is not 0:
-                            with st.sidebar:                                   
-                                lipsync.empty()
-                                #video.empty()  # optionally delete the element afterwards
-                                html_string = """
-                                    <video autoplay video width="400">
-                                    <source src="http://34.133.91.213:8000/Output2.mp4" type="video/mp4">
-                                    </video>
-                                    """
-                                lipsync = st.empty()
-                                lipsync.markdown(html_string, unsafe_allow_html=True)
-                                #Wait until it's done, 
-                                time.sleep(durationInSeconds2)                                
-                    #then return to the Idle Video                           
-                    lipsync.empty()
-                    video.markdown(video_html, unsafe_allow_html=True)  
-                    if os.path.isfile(path+'Output2.mp4'):
-                        os.remove(path+'Output2.mp4') 
-                if audioonly:
-                        #ElevelLabs API Call and Return
-                        if talent == "Justin":
-                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                        if talent == "Justin Age 12":
-                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                        if talent == "Justin Age 5":
-                                audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                        #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
-                        # Create single bytes object from the returned generator.
-                        data = b"".join(audio)
-                        ##send data to audio tag in HTML
-                        audio_base64 = base64.b64encode(data).decode('utf-8')
-                        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
-                        st.markdown(audio_tag, unsafe_allow_html=True)
-                st.session_state.messages.append({"role": "assistant", "content": response['answer']})
-            
-##########################################################################################################################################
-########################################################################################################################################## 
-##########################################################################################################################################
-
+#for message in st.session_state.messages:
+#    with st.chat_message(message["role"]):
+#        st.markdown(message["content"])
+##Put a Menu Bar at the bottom of the screen#######
 from streamlit_extras.bottom_container import bottom 
 with bottom():
-    col1, col2, col3, col4 = st.columns([0.15, 0.5, 0.2, .15])
-    with col1:
-        if talent2 == "None":
-            st.button('Poke'+"👈", on_click=StartConvo, key = "199", use_container_width=True)
-        else:
-            with st.popover("Engage", use_container_width=True):
-                st.button('Poke '+talent+"👈", on_click=StartConvo, key = "199", use_container_width=True)
-            #with col2:
-                st.button("Poke "+talent2+"👈", on_click=AddSteph, key = "024", use_container_width=True)
-            #with col1:
-                st.button(talent2+" to "+talent, on_click=AISteph, key = "025", use_container_width=True)
-    with col2:
-        st.button('Continue Chat', on_click=AddYour, key = "233", use_container_width=True)
-    with col3:
-        st.button('Clear Chat', on_click=ClearChat, key = "033", use_container_width=True)
-    with col4:
-        #st.button(':microphone:', on_click=speech_to_text, key = "033", use_container_width=True)
-        text = speech_to_text('Mic🎤',language='en', just_once=True, key='STT', use_container_width=True)
-        state = st.session_state
-        if 'text_received' not in state:
-            state.text_received = []
+    if not mobile:
+        col1, col2, col3, col4 = st.columns([0.15, 0.5, 0.2, .15])    
+        with col1:
+            if talent2 == "None":
+                AISteph = ""
+                StartConvo = st.button('Intro'+"👈", key = "199", use_container_width=True)
+            else:
+                StartConvo = ""
+                AISteph = st.button("AI to AI", key = "025", use_container_width=True)
+        with col2:
+            AddYour = st.button('Continue Chat', key = "233", use_container_width=True)
+        with col3:
+            st.button('Clear Chat'+"🧹", on_click=ClearChat, key = "033", use_container_width=True)
+        with col4:
+            text = speech_to_text('Mic🎤',language='en', just_once=True, key='STT', use_container_width=True)
+            state = st.session_state
+            if 'text_received' not in state:
+                state.text_received = []
+    if mobile:
+        col1, col2 = st.columns(2)    
+        AISteph = ""
+        StartConvo = ""
+        text = ""
+        with col1:
+            AddYour = st.button('Continue Chat', key = "221", use_container_width=True)
+
+
 ##########################################################################################################################################            
 #Add in the Sound Design options
 ##########################################################################################################################################
@@ -2025,16 +2008,18 @@ with bottom():
 #                st.audio("//home//ubuntu//source//pocdemo//Beats.mp3", format="audio/mpeg", loop=True)
 #            if scenario == "Comedian":
 #                st.audio("//home//ubuntu//source//pocdemo//Comedy.mp3", format="audio/mpeg", loop=True)
-
 #CHAT MESSAGES##############################################################
 ############################################################################
 #Start the Chat! This is the For Loop for ever message that is sent:
 #for message in st.session_state.messages:
 #    with st.chat_message(message["role"]):
 #        st.markdown(message["content"])
-#########################################################
-##########################################################################################################################################
+#########################################################################################################
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 #####SPEECH TO TEXT#######################################################################################
+#SPEECH TO TEXT INPUT
 ##########################################################################################################
 if text:
     state.text_received.append(text)
@@ -2042,534 +2027,488 @@ if text:
 
     with st.chat_message("user"):
         st.markdown(user_prompt)
+        st.session_state.messages.append({"role": "user", "content": user_prompt})
+
     with st.chat_message("assistant", avatar=assistant_logo):
         message_placeholder = st.empty()
-        response = chain.invoke({"question": user_prompt})
+        if goonline:
+            new_llw = re.sub(r'\byour\b', talent, user_prompt)
+            schema = newstopics(new_llw)
+            internet = str(schema['text'])
+            response = chain.invoke(input={"question": user_prompt,"human_input": internet})
+        else:
+            internet=""
+            response = chain.invoke(input={"question": user_prompt,"human_input": internet})
         message_placeholder.markdown(response['answer'])
 
         #ElevelLabs API Call and Return
         text = str(response['answer'])
         cleaned = re.sub(r'\*.*?\*', '', text)
-        if talent == "Justin":
-            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4" }
-        if talent == "Justin Age 12":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f6ab107ab97da5cefd33b812e9a72caa.mp4" } 
-            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-        if talent == "Justin Age 5":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
-            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-        if talent == "Steph Curry":
-            audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
-        if talent == "Andre Iguodala":
-            audio=client2.generate(text=cleaned,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d496b8cd93b3d0b631a7b211aa233771.mp4" }
-        if talent == "Sofia Vergara":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d95182839da7c8c061d37fc7df72bb7a.mp4" }
-            audio=client2.generate(text=cleaned,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-        if talent == "Draymond Green":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_9d82a467b223af553b18f18c9ce33e38.mp4" }
-            audio=client2.generate(text=cleaned,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-        if talent == "Luka Doncic":
-            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_ef1310293e63a6496d9a396bb45cb973.mp4" }
-            audio=client2.generate(text=cleaned,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")
-        # Create single bytes object from the returned generator.
-        data = b"".join(audio)
-
-        ##send data to audio tag in HTML
-        audio_base64 = base64.b64encode(data).decode('utf-8')
-        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
-        st.markdown(audio_tag, unsafe_allow_html=True)
+        if on:
+            StartVideo(cleaned, video, video_html)
+        else:
+            if audio:
+                audioon(cleaned)
+            else:
+                message_placeholder = st.empty()
+                message_placeholder.markdown(cleaned)
     st.session_state.messages.append({"role": "assistant", "content": response['answer']})
 
 ##########################################################################################################################################
+#Multi-Chat Question to Answer (User to Bot)##############################################################################################
 ##########################################################################################################################################
-#If you want Video + Audio ON
-if on:
-        # Text Search;
-        if user_prompt := st.chat_input("What is up?"):
-            st.session_state.messages.append({"role": "user", "content": user_prompt})
+
+if AddYour:
+            multi_question_template = """
+            Determine your dialog for the next line in this chat, based on the last message. You are the User.
+            Keep your question short (no longer than 100 characters)
+            """
+            if mode == "Roleplay": system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+card+profile)
+            else: system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+profile)
+            human_message_prompt = HumanMessagePromptTemplate.from_template("{text}")
+            chat_prompt2 = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+            def get_chatassistant_multichain():
+                multichain = LLMChain(llm=ChatGroq(api_key=GROQ_API_KEY, model="llama3-70b-8192", temperature=1),prompt=chat_prompt2,verbose=True)
+                return multichain
+            multichain = get_chatassistant_multichain()
+
+            #Put Chat History into Chain
+            context = msgs
+            #Get the User bot's message and display the Text
+            multichain = multichain.run(context)
+            user_prompt = str(multichain)
+            #Mark down the User's Question
             with st.chat_message("user"):
                 st.markdown(user_prompt)
-        
+                st.session_state.messages.append({"role": "user", "content": user_prompt})
+
+            #Then run the Avatar's response:    
             with st.chat_message("assistant", avatar=assistant_logo):
-
-#Original Method to cut the EL output at 10 seconds and send it through ExH first. 
-###########################################################################################################################
-                #Hack is OFF
-                if VideoHack is False:
-                    #IF the Video Sync option is OFF, just display the text immediately
-                    if sync is False:
-                            message_placeholder = st.empty()
-                            response = chain.invoke({"question": user_prompt})
-                            text = str(response['answer'])
-                            cleaned = re.sub(r'\*.*?\*', '', text)   
-                            cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
-                            message_placeholder.markdown(cleaned) 
-                    
-                    #Add Thinking Video if it's ON
-                    #if Thinking is True:
-                    #    with st.sidebar:   
-                    #        video.empty()
-                    #        html_string = """
-                    #            <video autoplay video width="400">
-                    #            <source src="http://localhost:1180/Thinking-justin.mp4" type="video/mp4">
-                    #            </video>
-                    #            """
-                    #        video = st.empty()
-                    #        video.markdown(html_string, unsafe_allow_html=True)
-
-                    #Add Thinking spinner until the text is ready
-                    with st.spinner("Thinking..."):
-                            
-                        #No need to duplicate the Chain call if Sync is OFF
-                        if sync is True:
-                            message_placeholder = st.empty()
-                            response = chain.invoke({"question": user_prompt})
-                            text = str(response['answer'])
-                            cleaned = re.sub(r'\*.*?\*', '', text)   
-                            cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
-
-                        #Define the ElevenLabs Voice Name and Idle MP4 from Ex-Human for each Talent
-                        if talent == "Justin":
-                            audio=client2.generate(text=cleaned2, voice='Justin', model="eleven_turbo_v2")
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f3c8c9f60fac4096ba1152db3b2faebd.mp4" }                            
-                        if talent == "Justin Age 12":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_2be488e3a264e16e4456f929eaa3951a.mp4" } 
-                            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                        if talent == "Justin Age 5":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" }
-                            audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                        if talent == "Steph Curry":
-                            audio=client2.generate(text=cleaned, voice='Steph', model="eleven_turbo_v2")
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
-                        if talent == "Andre Iguodala":
-                            audio=client2.generate(text=cleaned,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_bebd16918158b36e4ef937a8966b8acc.mp4" }
-                        if talent == "Sofia Vergara":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_a15015e18b377756a26bf9be3f7e6d6d.mp4" }
-                            audio=client2.generate(text=cleaned,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                        if talent == "Draymond Green":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_b8e5fdee090322eb694caa00a7824773.mp4" }
-                            audio=client2.generate(text=cleaned,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                        if talent == "Luka Doncic":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d7d6322031f4965b0738d2fa3b9d663a.mp4" }
-                            audio=client2.generate(text=cleaned,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")
-
-                        #Set path for saving Ex-Human MP4 and EL MP3. Change this to File Server Path
-                        path= "C:\\Users\\HP\\Downloads\\RebexTinyWebServer-Binaries-Latest\\wwwroot\\"
-
-                        #SpeechLab's TTS API is below:
-                        #if TTS == "SpeechLab":
-                        #    import http.client
-                        #    import json
-                        #    # Login to get the JWT token
-                        #    conn = http.client.HTTPSConnection("translate-api.speechlab.ai")
-                        #    # replace user/password with your login u use for the translate.speechlab.ai app
-                        #    login_payload = json.dumps({"email": "ryan+credits@speechlab.ai","password": "1374Pre96"})
-                        #    login_headers = {'Content-Type': 'application/json'}
-                        #    conn.request("POST", "/v1/auth/login", login_payload, login_headers)
-                        #    login_res = conn.getresponse()
-                        #    login_data = login_res.read()
-                        #    # Parse the response to get the token
-                        #    login_response = json.loads(login_data.decode("utf-8"))
-                        #    token = login_response['tokens']['accessToken']['jwtToken']
-                        #    # Output the login response for debugging
-                        #    print("Login response:", login_response)
-                        #    # Use the token to call the text-to-speech API
-                        #    tts_payload = json.dumps({
-                        #    "text": cleaned})
-                        #    tts_headers = {'Content-Type': 'application/json','Authorization': f'Bearer {token}'}
-                        #    conn.request("POST", "/v1/texttospeeches/generatejustin", tts_payload, tts_headers)
-                        #    tts_res = conn.getresponse()
-                        #    # Output response headers
-                        #    print(tts_res.getheaders())
-                        #    tts_data = tts_res.read()
-                        #    # Save the audio stream to a file
-                        #    with open(path+"output_audio.mp3", "wb") as f:
-                        #        f.write(tts_data)
-                        #    print("Audio file saved as output_audio.mp3")
-                        
-                        #Otherwise run ElevenLabs
-                        #else:
-                        audio = audio
-                        save(audio, path+'Output.mp3')
-                        
-                        #Convert MP3 file to 30 Second MP3 file, since there's a 30 second maximum in Ex-Human..Split into 2 files if it's up to 60 seconds
-                        #if TTS == "SpeechLab":
-                        #    sound = AudioSegment.from_mp3(path+'output_audio.mp3')
-                        #else:
-                        sound = AudioSegment.from_mp3(path+'Output.mp3')                          
-                        song_30 = sound[:10000]
-                        song_60 = sound[10000:40000]
-                        song_30.export(path+'Output_30.mp3', format="mp3")   
-                        song_60.export(path+'Output_60.mp3', format="mp3")
-                        #Set 60 Second Mode to None if the file is under 30 Seconds
-                        try:
-                            audio60 = AudioSegment.from_file(path+'Output_60.mp3')
-                        except:
-                            audio60=0 
-                                
-                        #Ex-Human convert MP3 file to Lip-Sync Video
-                        url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
-                        files = { "audio_file": (path+"Output_30.mp3", open(path+"Output_30.mp3", "rb"), "audio/mp3") }
-                        files2 = { "audio_file": (path+"Output_60.mp3", open(path+"Output_60.mp3", "rb"), "audio/mp3") }
-                        payload = payload
-                        headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
-                        lipsync = requests.post(url, data=payload, files=files, headers=headers)
-                        path_to_response = path+"Output.mp4"  # Specify the path to save the video response                    path_to_response = path+"Output.mp4"  # Specify the path to save the video response
-                        
-                        #Write the 30 Second file                 
-                        with open(path_to_response, "wb") as f:
-                            f.write(lipsync.content)
-                                
-                #Lip-Sync MP4 should now be at //home//ubuntu//source//pocdemo//Output.MP4. The HTML File-Host should be on the server: screen -r fileserver
-                #Figure out how long the Lip-Sync Video is
-                        import cv2 as cv
-                        vidcapture = cv.VideoCapture('http://localhost:1180/Output.mp4')
-                        fps = vidcapture.get(cv.CAP_PROP_FPS)
-                        totalNoFrames = vidcapture.get(cv.CAP_PROP_FRAME_COUNT)
-                        durationInSeconds = totalNoFrames / fps
-                            
-                    #Add Thinking spinner until the text is ready
-                    with st.spinner("Talking..."):
-                            
-                    #Move the text response to line up with the video response, if the Sync option is ON
-                        if sync is True:          
-                                message_placeholder.markdown(cleaned) 
-                                
-                        #Replace the Idle MP4 with the Lip-Sync Video
-                        with st.sidebar:   
-                            video.empty()
-                            html_string = """
-                                <video autoplay video width="400">
-                                <source src="http://localhost:1180/Output.mp4" type="video/mp4">
-                                </video>
-                                """
-                            lipsync = st.empty()
-                            lipsync.markdown(html_string, unsafe_allow_html=True)
-                                
-                            #Start the Count Up until the next file should play            
-                            start = time.time()
-
-                        #Generate the 2nd MP4 while the 1st is playing             
-                        if audio60 is not 0:
-                            lipsync2 = requests.post(url, data=payload, files=files2, headers=headers)
-                            path_to_response2 = path+"Output2.mp4"  # Specify the path to save the video response
-                            #Also write the 60 second file if it's there
-                            with open(path_to_response2, "wb") as f:               
-                                f.write(lipsync2.content)
-                            vidcapture2 = cv.VideoCapture('http://localhost:1180/Output2.mp4')
-                            fps2 = vidcapture2.get(cv.CAP_PROP_FPS)
-                            totalNoFrames2 = vidcapture2.get(cv.CAP_PROP_FRAME_COUNT)
-                            durationInSeconds2 = totalNoFrames2 / fps2   
-                        #Wait until it's done (Count Down = Total Length - Count Up)         
-                        time.sleep(10-(time.time() - start))
-                        
-                        #Play the 60 Second File if it exists    
-                        if audio60 is not 0:
-                                with st.sidebar:                                   
-                                    lipsync.empty()
-                                    #video.empty()  # optionally delete the element afterwards
-                                    html_string = """
-                                        <video autoplay video width="400">
-                                        <source src="http://localhost:1180/Output2.mp4" type="video/mp4">
-                                        </video>
-                                        """
-                                    lipsync = st.empty()
-                                    lipsync.markdown(html_string, unsafe_allow_html=True)
-                                    #Wait until it's done, 
-                                    time.sleep(durationInSeconds2)
-                                
-                        #then return to the Idle Video                           
-                        lipsync.empty()
-                        video.markdown(video_html, unsafe_allow_html=True)  
-                        if os.path.isfile(path+'Output2.mp4'):
-                            os.remove(path+'Output2.mp4')               
-
-################################################################################################################################
-#Video Hack option below, takes LLM response and splits it at the first sentence. 
-# Runs it through EL and ExH, then does the same with the rest of the LLM response while the first sentence is playing
-################################################################################################################################
-                if VideoHack is True:
-                    if sync is False:
+            #Add Thinking spinner until the text is ready
+                if goonline:
+                    new_llw = re.sub(r'\byour\b', talent, user_prompt)
+                    schema = newstopics(new_llw)
+                    internet = str(schema['text'])
+                    response = chain.invoke(input={"question": user_prompt,"human_input": internet})
+                else:
+                    internet=""
+                    response = chain.invoke(input={"question": user_prompt,"human_input": internet})
+                text = str(response['answer'])
+                cleaned = re.sub(r'\*.*?\*', '', text)   
+                # If Audio/Video are ON
+                if on:
+                    StartVideo(cleaned, video, video_html)
+                else:
+                    if audio:
                         message_placeholder = st.empty()
-                        response = chain.invoke({"question": user_prompt})
-                        text = str(response['answer'])
-                        cleaned = re.sub(r'\*.*?\*', '', text)
-                        cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
-                        firstName, lastName = cleaned2.split('.', 1)
-                        message_placeholder.markdown(text) 
-
-                    #Add Thinking spinner until the text is ready
-                    with st.spinner("Thinking..."):
-                        #No need to duplicate the Chain call if Sync is OFF
-                        if sync is True:
-                            message_placeholder = st.empty()
-                            response = chain.invoke({"question": user_prompt})
-                            text = str(response['answer'])
-                            cleaned = re.sub(r'\*.*?\*', '', text)
-                            cleaned2 = re.sub(r"```[^\S\r\n]*[a-z]*\n.*?\n```", '', cleaned, 0, re.DOTALL)
-                            firstName, lastName = cleaned2.split('.', 1)
-
-                        #Define the ElevenLabs Voice Name and Idle MP4 from Ex-Human for each Talent; Get the First Sentence
-                        if talent == "Justin"or "Justin 2"or "Justin 3"or "Justin 4"or "Justin 5":                        
-                            audio=client2.generate(text=firstName, voice='Justin', model="eleven_turbo_v2")
-                            if talent == "Justin":
-                                    payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1f04dc8a3e97e54763bb4f56dc45385b.mp4", "animation_pipeline": "high_speed" }
-                            if talent == "Justin 3":
-                                    payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_ed872946b560dd6fefff3e9cc75dfb4b.mp4" } 
-                            if talent == "Justin 4":
-                                    payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_da0bc98e2866f53bb3899f8dcd2e3beb.mp4" } 
-                            if talent == "Justin 5":
-                                    payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_de136b166b2ed045107f84c35c730344.mp4" }
-                        if talent == "Justin Age 12":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_25be1a699f4b8975db328cd9191a55c5.mp4" } 
-                            audio=client2.generate(text=firstName, voice='Justin', model="eleven_turbo_v2")
-                        if talent == "Justin Age 5":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_68ac4426d5bdb6be4671ea0ad967795d.mp4" } 
-                            audio=client2.generate(text=firstName, voice='Justin', model="eleven_turbo_v2")
-                        if talent == "Steph Curry":
-                            audio=client2.generate(text=firstName, voice='Steph', model="eleven_turbo_v2")
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
-                        if talent == "Andre Iguodala":
-                            audio=client2.generate(text=firstName, voice='Andre', model="eleven_turbo_v2")
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d496b8cd93b3d0b631a7b211aa233771.mp4" }
-                        if talent == "Sofia Vergara":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_a15015e18b377756a26bf9be3f7e6d6d.mp4" }
-                            audio=client2.generate(text=firstName,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                        if talent == "Draymond Green":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_b8e5fdee090322eb694caa00a7824773.mp4" }
-                            audio=client2.generate(text=firstName,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                        if talent == "Luka Doncic":
-                            payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d7d6322031f4965b0738d2fa3b9d663a.mp4" }
-                            audio=client2.generate(text=firstName,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                                                            
-                        #Set path for saving Ex-Human MP4 and EL MP3. Change this to File Server Path
-                        path='C:\\Users\\HP\\Downloads\\RebexTinyWebServer-Binaries-Latest\\wwwroot\\'
-                        #path='//home//ubuntu//source//pocdemo//'
-                        save(audio, path+'Output_00.mp3')
-                        #Ex-Human convert MP3 file(s) to Lip-Sync Video
-                        url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
-                        files = { "audio_file": (path+"Output_00.mp3", open(path+"Output_00.mp3", "rb"), "audio/mp3") }
-                        payload = payload
-                        headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
-                        lipsync = requests.post(url, data=payload, files=files, headers=headers)
-                        path_to_response = path+"Output.mp4"  # Specify the path to save the video response
-
-                        #Write the first file, wait for it to finish
-                        with open(path_to_response, "wb") as f:               
-                            f.write(lipsync.content)
-                        for i in range(10):
-                            try:
-                                file = open(path+'Output.mp4')
-                                break
-                            except:
-                                time.sleep(1)
-                        file.close()
-                        #Lip-Sync MP4 should now be at //home//ubuntu//source//pocdemo//Output.MP4. The HTML File-Host should be on the server: screen -r fileserver
-                    #Add Talking spinner until done talking
-                    with st.spinner("Talking..."):               
-                        #Move the text response to line up with the video response, if the Sync option is ON
-                        if sync is True:          
-                                message_placeholder.markdown(text)
-                        #Play the first MP4 File
-                        with st.sidebar:   
-                            video.empty()  # optionally delete the element afterwards   
-                            html_string = """
-                                <video autoplay video width="400">
-                                <source src="http://localhost:1180/Output.mp4" type="video/mp4">
-                                </video>
-                                """         
-                            lipsync = st.empty()
-                            lipsync.markdown(html_string, unsafe_allow_html=True)
-                        #Figure out how long the first file is
-                        import cv2 as cv
-                        vidcapture = cv.VideoCapture('http://localhost:1180/Output.mp4')
-                        fps = vidcapture.get(cv.CAP_PROP_FPS)                
-                        totalNoFrames = vidcapture.get(cv.CAP_PROP_FRAME_COUNT)
-                        durationInSeconds = totalNoFrames / fps
-
-                        #Start the Count Up until the next file should play            
-                        start = time.time()
-                        #Generate the 2nd MP4 while the 1st is playing             
-
-                        #Define the ElevenLabs Voice Name and Idle MP4 from Ex-Human for each Talent
-                        if talent == "Justin":                       
-                            audio2=client2.generate(text=lastName, voice='Justin', model="eleven_turbo_v2")
-                        if talent == "Justin Age 12":
-                            audio2=client2.generate(text=lastName, voice='Justin', model="eleven_turbo_v2")
-                        if talent == "Grimes":
-                            audio=client2.generate(text=lastName,voice=Voice(voice_id='omJ7R21ro4zvyHQHbSk8'), model="eleven_turbo_v2")
-                        if talent == "Steph Curry":
-                            audio2=client2.generate(text=lastName, voice='Steph', model="eleven_turbo_v2")
-                        if talent == "Andre Iguodala":
-                            audio2=client2.generate(text=lastName, voice='Andre', model="eleven_turbo_v2")
-                        if talent == "Sofia Vergara":
-                            audio2=client2.generate(text=lastName,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                        if talent == "Draymond Green":
-                            audio2=client2.generate(text=lastName,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                        if talent == "Luka Doncic":
-                            audio2=client2.generate(text=lastName,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")
-                                      
-                        #Convert MP3 file to 30 Second MP3 file, since there's a 30 second maximum in Ex-Human..Split into 2 files if it's up to 60 seconds
-                        save(audio2, path+'Output.mp3')
-                        sound = AudioSegment.from_mp3(path+'Output.mp3') 
-                        song_30 = sound[:10000]
-                        song_60 = sound[10000:40000]
-                        song_30.export(path+'Output_30.mp3', format="mp3")   
-                        song_60.export(path+'Output_60.mp3', format="mp3")
-                        #Set 60 Second Mode to None if the file is under 30 Seconds
-                        try:
-                            audio60 = AudioSegment.from_file(path+'Output_60.mp3')
-                        except:
-                            audio60=0
-
-                        #Write the 30 second file if it's there
-                        files2 = { "audio_file": (path+"Output_30.mp3", open(path+"Output_30.mp3", "rb"), "audio/mp3") }
-                        lipsync2 = requests.post(url, data=payload, files=files2, headers=headers)
-                        path_to_response2 = path+"Output2.mp4"  # Specify the path to save the video response
-                        with open(path_to_response2, "wb") as f:               
-                            f.write(lipsync2.content)
-                        #Wait until it's done
-                        for i in range(10):
-                            try:
-                                file = open(path+'Output2.mp4')
-                                break
-                            except:
-                                time.sleep(1)
-                        file.close()
-
-                        #Figure out how long it is
-                        vidcapture2 = cv.VideoCapture('http://localhost:1180/Output2.mp4')
-                        fps2 = vidcapture2.get(cv.CAP_PROP_FPS)
-                        totalNoFrames2 = vidcapture2.get(cv.CAP_PROP_FRAME_COUNT)
-                        durationInSeconds2 = totalNoFrames2 / fps2
-                        #Wait until it's done (Count Down = Total Length - Count Up)
-                        if (durationInSeconds-(time.time() - start))>0:
-                            time.sleep(durationInSeconds-(time.time() - start))
-                        
-                        #Play the 2nd MP4 File if it exists    
-                        with st.sidebar:   
-                            lipsync.empty()
-                            #video.empty()  # optionally delete the element afterwards
-                            html_string = """
-                                <video autoplay video width="400">
-                                <source src="http://localhost:1180/Output2.mp4" type="video/mp4">
-                                </video>
-                                """
-                            lipsync = st.empty()
-                            lipsync.markdown(html_string, unsafe_allow_html=True)
-                            #Wait until it's done, 
-                        if audio60 is 0:               
-                            time.sleep(durationInSeconds2)
-
-                        if audio60 is not 0:
-                            #Start the Count Up until the next file should play            
-                            start = time.time()
-                            
-                            #Write the 3rd file if it's there
-                            files3 = { "audio_file": (path+"Output_60.mp3", open(path+"Output_60.mp3", "rb"), "audio/mp3") }
-                            lipsync3 = requests.post(url, data=payload, files=files3, headers=headers)
-                            path_to_response3 = path+"Output3.mp4"  # Specify the path to save the video response
-                            with open(path_to_response3, "wb") as f:               
-                                f.write(lipsync3.content)
-                            #Wait until it's done
-                            for i in range(10):
-                                try:
-                                    file = open(path+'Output3.mp4')
-                                    break
-                                except:
-                                    time.sleep(1)
-                            file.close()
-
-                            #Figure out how long it is
-                            vidcapture3 = cv.VideoCapture('http://localhost:1180/Output3.mp4')
-                            fps3 = vidcapture3.get(cv.CAP_PROP_FPS)
-                            totalNoFrames3 = vidcapture3.get(cv.CAP_PROP_FRAME_COUNT)
-                            durationInSeconds3 = totalNoFrames3 / fps3
-                            #Wait until it's done (Count Down = Total Length - Count Up)
-                            if (durationInSeconds2-(time.time() - start))>0:
-                                time.sleep(durationInSeconds2-(time.time() - start))
-
-                            #Play the 3rd MP4 File if it exists    
-                            with st.sidebar:   
-                                lipsync.empty()
-                                #video.empty()  # optionally delete the element afterwards
-                                html_string = """
-                                    <video autoplay video width="400">
-                                    <source src="http://localhost:1180/Output3.mp4" type="video/mp4">
-                                    </video>
-                                    """
-                                lipsync = st.empty()
-                                lipsync.markdown(html_string, unsafe_allow_html=True)
-                                #Wait until it's done, 
-                                time.sleep(durationInSeconds3)
-
-                        #then return to the Idle Video
-                        lipsync.empty()
-                        video.markdown(video_html, unsafe_allow_html=True) 
-                        if os.path.isfile(path+'Output.mp4'):
-                            os.remove(path+'Output.mp4') 
-                        if os.path.isfile(path+'Output2.mp4'):
-                            os.remove(path+'Output2.mp4')      
-                        if os.path.isfile(path+'Output3.mp4'):
-                            os.remove(path+'Output3.mp4')     
-###########################################################################################################
-#Show the Follow-Up Questions OR the Scene Updates for Roleplay
-###########################################################################################################
-            if mode == "Roleplay":
-                responsedm = dmchain.run(cleaned)
-                st.warning("Scene Update:  \n"+responsedm)
-            else:
-                if not ("?"  in cleaned):
-                    responsequestion = questionchain.run(cleaned)
-                    st.warning("Follow-Up Suggestions:  \n"+responsequestion)
+                        message_placeholder.markdown(cleaned)
+                        audioon(cleaned)
+                    else:
+                        message_placeholder = st.empty()
+                        message_placeholder.markdown(cleaned)
             st.session_state.messages.append({"role": "assistant", "content": response['answer']})
 
-###########################################################################################################
-#If you just want text messages (No Audio/Video)
-###########################################################################################################
-else:       
-# Text Only Search;
-    if user_prompt := st.chat_input("What is up?"):
-        st.session_state.messages.append({"role": "user", "content": user_prompt})
-        with st.chat_message("user"):
-            st.markdown(user_prompt)
+#############################################################################################################################
+#############################################################################################################################
+#Agent to Start the Conversation (Introduction, News, or Generic)
+#############################################################################################################################
 
+if StartConvo:
+    if str(msgs) == '':
+        if talent == "Justin":
+            st.session_state.messages = [{"role": "assistant", "content": "Hey this is Justin, it's great to meet you! I'm excited to talk to you about music, technology, or anything else you're interested in. What's on your mind?"}]
+            with st.sidebar:   
+                video.empty()  # optionally delete the element afterwards   
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Intro__Andrew.mp4" type="video/mp4">
+                    </video>
+                    """         
+                lipsync = st.empty()
+                lipsync.markdown(html_string, unsafe_allow_html=True)
+                time.sleep(14)
+                lipsync.empty()
+                video.markdown(video_html, unsafe_allow_html=True)
+        if talent == "Justin Age 12":
+            st.session_state.messages = [{"role": "assistant", "content": "Hey this is Justin, it's great to meet you! I'm excited to talk to you about music, technology, or anything else you're interested in. What's on your mind?"}]
+            with st.sidebar:   
+                video.empty()  # optionally delete the element afterwards   
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Intro_Grimes.mp4" type="video/mp4">
+                    </video>
+                    """         
+                lipsync = st.empty()
+                lipsync.markdown(html_string, unsafe_allow_html=True)
+                time.sleep(8)
+                lipsync.empty()
+                video.markdown(video_html, unsafe_allow_html=True)
+        if talent == "Justin Age 5":
+            st.session_state.messages = [{"role": "assistant", "content": "Hey this is Justin, it's great to meet you! I'm excited to talk to you about music, technology, or anything else you're interested in. What's on your mind?"}]
+            with st.sidebar:   
+                video.empty()  # optionally delete the element afterwards   
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Intro_Ronaldo.mp4" type="video/mp4">
+                    </video>
+                    """         
+                lipsync = st.empty()
+                lipsync.markdown(html_string, unsafe_allow_html=True)
+                time.sleep(10)
+                lipsync.empty()
+                video.markdown(video_html, unsafe_allow_html=True)
+        if talent == "Steph Curry":
+            st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Steph Curry! It's great to meet you, and I'm excited to talk with you about basketball or anything else you're interested in. What's on your mind?"}]
+            with st.sidebar:   
+                video.empty()  # optionally delete the element afterwards   
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Intro_Steph.mp4" type="video/mp4">
+                    </video>
+                    """         
+                lipsync = st.empty()
+                lipsync.markdown(html_string, unsafe_allow_html=True)
+                time.sleep(8)
+                lipsync.empty()
+                video.markdown(video_html, unsafe_allow_html=True)
+        if talent == "Andre Iguodala":
+            st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Andre Iguodala! It's great to meet you, and I'm excited to talk with you about basketball or anything else you're interested in. What's on your mind?"}]
+            with st.sidebar:   
+                video.empty()  # optionally delete the element afterwards   
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Intro_Andre.mp4" type="video/mp4">
+                    </video>
+                    """         
+                lipsync = st.empty()
+                lipsync.markdown(html_string, unsafe_allow_html=True)
+                time.sleep(8)
+                lipsync.empty()
+                video.markdown(video_html, unsafe_allow_html=True)
+        if talent == "Sofia Vergara":
+            st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Sofia Vergara! It's great to meet you, and I'm excited to talk with you about my latest projects or anything else you're interested in. What's on your mind?"}]
+            with st.sidebar:   
+                video.empty()  # optionally delete the element afterwards   
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Intro_Sofia.mp4" type="video/mp4">
+                    </video>
+                    """         
+                lipsync = st.empty()
+                lipsync.markdown(html_string, unsafe_allow_html=True)
+                time.sleep(11)
+                lipsync.empty()
+                video.markdown(video_html, unsafe_allow_html=True)
+        if talent == "Draymond Green":
+            st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Draymond Green! It's great to meet you, and I'm excited to talk with you about basketball or anything else you're interested in. What's on your mind?"}]
+            with st.sidebar:   
+                video.empty()  # optionally delete the element afterwards   
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Intro_Draymond.mp4" type="video/mp4">
+                    </video>
+                    """         
+                lipsync = st.empty()
+                lipsync.markdown(html_string, unsafe_allow_html=True)
+                time.sleep(11)
+                lipsync.empty()
+                video.markdown(video_html, unsafe_allow_html=True)
+        if talent == "Luka Doncic":
+            st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Luka Doncic! It's great to meet you, and I'm excited to talk with you about basketball or anything else you're interested in. What's on your mind?"}]
+            with st.sidebar:   
+                video.empty()  # optionally delete the element afterwards   
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Intro_Luka.mp4" type="video/mp4">
+                    </video>
+                    """         
+                lipsync = st.empty()
+                lipsync.markdown(html_string, unsafe_allow_html=True)
+                time.sleep(9)
+                lipsync.empty()
+                video.markdown(video_html, unsafe_allow_html=True)
+        if talent == "Laurence Moroney":
+            st.session_state.messages = [{"role": "assistant", "content": "Hey this is the RealAvatar of Laurence Moroney! I'm excited to talk to you about AI, Machine Learning, or anything else you're interested in. What's on your mind?"}]
+            with st.sidebar:   
+                video.empty()  # optionally delete the element afterwards   
+                html_string = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/Intro__Andrew.mp4" type="video/mp4">
+                    </video>
+                    """         
+                lipsync = st.empty()
+                lipsync.markdown(html_string, unsafe_allow_html=True)
+                time.sleep(14)
+                lipsync.empty()
+                video.markdown(video_html, unsafe_allow_html=True)
+    else:  
+        X = random.randint(1, 3)    
+        if X == 1:
+            multi_question_template = """
+            TOTAL  LENGTH MUST BE LESS THAN 60 TOKENS. THIS IS A SHORT INTRO.
+            You'd like to bring up a new topic after a brief lull (maybe you had to step away for a minute). Do not introduce yourself, since it's assumed you already know the User.
+            Just discuss one item in the news, and ask a quesion or provide a though-provoking thought about one of these: {text}).
+            
+            |About The User|
+            - The User has described themselves in the Profile attached below. Take note of any details like Name, Age, Occuptaion or Interests, and incorperate them in your response if applicable
+            - Address the User as their Name if it was provided.
+
+            |About The Response|
+            Total  length must be 2-3 sentences, less than 60 tokens for a maximum of 100 words.
+            """
+        if X == 2:
+            multi_question_template = """
+            TOTAL LENGTH MUST BE LESS THAN 60 TOKENS. THIS IS A SHORT INTRO.
+            You'd like to continue the previous conversation after a brief lull (maybe you had to step away for a minute). Do not introduce yourself, since it's assumed you already know the User.
+            Just keep talking about the current topic and ask a quesion or continue the line of discussion from here: {text}).
+
+            |About The User|
+            - The User has described themselves in the Profile attached below. Take note of any details like Name, Age, Occuptaion or Interests, and incorperate them in your response if applicable
+            - Address the User as their Name if it was provided.
+            
+            |About The Response|
+            Total  length must be 2-3 sentences, less than 60 tokens for a maximum of 100 words.
+            """ 
+        if X == 3:
+            multi_question_template = """
+            TOTAL LENGTH MUST BE LESS THAN 30 TOKENS. THIS IS A SHORT INTRO.
+            You'd like to continue the previous conversation after a brief lull (maybe you had to step away for a minute). Do not introduce yourself, since it's assumed you already know the User.
+            Say a greeting and ask a question in less than 10 words (like: What's up, how's it going?)
+
+            |About The User|
+            - The User has described themselves in the Profile attached below. disregard this, since your response is going to be a generic introduction (maybe use their name if it exists)
+            
+            |About The Response|
+            Total  length must be 1 sentence, less than 30 tokens for a maximum of 10 words.
+            """ 
+        if mode == "Roleplay":
+            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+character+card+profile)
+        else:
+            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+character+profile)
+        human_message_prompt = HumanMessagePromptTemplate.from_template("{text}")
+        chat_prompt2 = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+        def get_chatassistant_multichain():
+            multichain = LLMChain(llm=ChatPerplexity(model="llama-3.1-sonar-huge-128k-online", temperature=1),prompt=chat_prompt2,verbose=True)
+            return multichain
+        multichain = get_chatassistant_multichain()
+
+        if X == 3:
+            multichain = multichain.run("Hey") 
+        if X == 2:
+            multichain = multichain.run(msgs) 
+        if X == 1:
+            if talent == "Justin":
+                multichain = multichain.run("sports")
+            if talent == "Justin Age 12":
+                multichain = multichain.run("baseball")
+            if talent == "Justin Age 5":
+                multichain = multichain.run("playmobiles")
+            if talent == "Steph Curry":
+                multichain = multichain.run("basketball")
+            if talent == "Andre Iguodala":
+                multichain = multichain.run("basketball")
+            if talent == "Sofia Vergara":
+                multichain = multichain.run("sofia vergara")
+            if talent == "Draymond Green":
+                multichain = multichain.run("basketball")
+            if talent == "Luka Doncic":
+                multichain = multichain.run("basketball")
+            if talent == "Laurence Moroney":
+                multichain = multichain.run("AI")
+
+        user_prompt = str(multichain)
+        cleaned=multichain
+
+        if on:
+            StartVideo(cleaned, video, video_html)
+        else:
+            if audio:
+                #message_placeholder = st.empty()
+                #message_placeholder.markdown(user_prompt)
+                audioon(cleaned)
+            #else:
+                #message_placeholder = st.empty()
+                #message_placeholder.markdown(user_prompt)
+        st.chat_message("assistant", avatar=assistant_logo).markdown(user_prompt)
+        st.session_state.messages.append({"role": "assistant", "content": multichain})
+
+#########################################################################################################################################
+#Multi-Chat Question######################################################################################################################
+##########################################################################################################################################
+##########################################################################################################################################
+#Multi-Chat Question to Answer (Bot to Bot)###############################################################################################
+##########################################################################################################################################
+
+if AISteph:
+        multi_question_template = """
+        Determine your dialog for the next line in this chat, based on the last message. 
+        You're entering into a 3 person chat with the User and another AI, so don't get confused about the tenses that you see in the context.
+        The format should only include your line (no formatting, quotes or other text). It should be short (less than 2-3 sentences and 100 tokens!).
+
+        Try to provide value to the conversation based on your persona and knowledge! You care character2 below:
+        """
+        if mode == "Roleplay":
+            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+character2+card)
+        else:
+            system_message_prompt = SystemMessagePromptTemplate.from_template(multi_question_template+character2)
+        human_message_prompt = HumanMessagePromptTemplate.from_template("{text}")
+        chat_prompt2 = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+        def get_chatassistant_multichain():
+            multichain = LLMChain(
+                llm=ChatGroq(api_key=GROQ_API_KEY, model="llama3-70b-8192", temperature=1),prompt=chat_prompt2,verbose=True)
+            return multichain
+        multichain = get_chatassistant_multichain()   
+        context = msgs
+        multichain = multichain.run(context)
+
+        user_prompt = str(multichain)
+        #Mark down the User's Question
+        st.chat_message("user").markdown(multichain)
+        st.session_state.messages.append({"role": talent2, "content": multichain})
+
+        if on:
+            if talent2 == "Justin":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_1737c0e2dd014a2eab5984b9e827dc8f.mp4" }
+                audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")                              
+            if talent2 == "Justin Age 12":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_f6ab107ab97da5cefd33b812e9a72caa.mp4" } 
+                audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")                              
+            if talent2 == "Justin Age 5":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_747c70ed764c40b0f55d1189feeddf8f.mp4" }
+                audio=client2.generate(text=multichain, voice='Justin', model="eleven_turbo_v2")                              
+            if talent2 == "Steph Curry":
+                audio=client2.generate(text=multichain, voice='Steph', model="eleven_turbo_v2")
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_473f0fc2acfb067be3d2cef7bbdccce2.mp4" }
+            if talent2 == "Andre Iguodala":
+                audio=client2.generate(text=multichain,voice=Voice(voice_id='mp95t1DEkonbT0GXV7fS',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d496b8cd93b3d0b631a7b211aa233771.mp4" }
+            if talent2 == "Sofia Vergara":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_d95182839da7c8c061d37fc7df72bb7a.mp4" }
+                audio=client2.generate(text=multichain,voice=Voice(voice_id='MBx69wPzIS482l3APynr',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+            if talent2 == "Draymond Green":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_9d82a467b223af553b18f18c9ce33e38.mp4" }
+                audio=client2.generate(text=multichain,voice=Voice(voice_id='mxTaoZxMti8XAnHaQ9xC',settings=VoiceSettings(stability=0.5, similarity_boost=0.75, style=.15, use_speaker_boost=True)), model="eleven_multilingual_v2")
+            if talent2 == "Luka Doncic":
+                payload = { "idle_url": "https://ugc-idle.s3-us-west-2.amazonaws.com/est_ef1310293e63a6496d9a396bb45cb973.mp4" }
+                audio=client2.generate(text=multichain,voice=Voice(voice_id='SW5fucHwW0HrSIlhQD15',settings=VoiceSettings(stability=0.50, similarity_boost=0.75, style=.45, use_speaker_boost=True)), model="eleven_multilingual_v2")
+            path='C:\\Users\\HP\\Downloads\\RebexTinyWebServer-Binaries-Latest\\wwwroot\\'
+            audio = audio
+            save(audio, path+'OutputChar2.mp3')
+            sound = AudioSegment.from_mp3(path+'OutputChar2.mp3') 
+            song_intro = sound[:40000]
+            song_intro.export(path+'OutputChar2.mp3', format="mp3")  
+            url = "https://api.exh.ai/animations/v3/generate_lipsync_from_audio"
+            files = { "audio_file": (path+"OutputChar2.mp3", open(path+"OutputChar2.mp3", "rb"), "audio/mp3") }
+            headers = {"accept": "application/json", "authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6ImplZmZAcmVhbGF2YXRhci5haSJ9.W8IWlVAaL5iZ1_BH2XvA84YJ6d5wye9iROlNCaeATlssokPUynh_nLx8EdI0XUakgrVpx9DPukA3slvW77R6QQ"}
+            lipsync = requests.post(url, data=payload, files=files, headers=headers)
+            # Specify the path to save the video response
+            path_to_response = path+"OutputChar2.mp4"               
+            with open(path_to_response, "wb") as f:
+                f.write(lipsync.content)
+            import cv2 as cv
+            vidcapture = cv.VideoCapture('http://localhost:1180/OutputChar2.mp4')
+            fps = vidcapture.get(cv.CAP_PROP_FPS)
+            totalNoFrames = vidcapture.get(cv.CAP_PROP_FRAME_COUNT)  
+            durationInSeconds = totalNoFrames / fps    
+            with st.sidebar:
+                video.empty()
+                video = st.empty() 
+                lipsync.empty()
+                lipsync=st.empty()
+                lipsync22 = st.empty()  
+                lipsync22.empty()
+                html_string3 = """
+                    <video autoplay video width="500">
+                    <source src="http://localhost:1180/OutputChar2.mp4" type="video/mp4">
+                    </video>
+                    """
+                lipsync22 = st.empty()
+                lipsync22.markdown(html_string3, unsafe_allow_html=True)
+                time.sleep(durationInSeconds)
+            lipsync22.empty()
+            video.markdown(video_html2, unsafe_allow_html=True)       
+            if os.path.isfile(path+'OutputChar2.mp4'):
+                os.remove(path+'OutputChar2.mp4')    
+        #Write the Text Message
+        st.session_state.messages.append({"role": talent2, "content": multichain})
+    
+    
+        user_text = multichain
+        user_prompt = str(user_text)
+
+        #Then run the second bot's response:    
         with st.chat_message("assistant", avatar=assistant_logo):
             #Add Thinking spinner until the text is ready
-            with st.spinner("Thinking..."):
-                message_placeholder = st.empty()              
-                response = chain.invoke(input={"question": user_prompt})
+            #with st.spinner("Thinking..."):
+                internet=""
+                response = chain.invoke(input={"question": user_prompt,"human_input": internet})
                 text = str(response['answer'])
-                cleaned = re.sub(r'\*.*?\*', '', text)                      
+                cleaned = re.sub(r'\*.*?\*', '', text)   
+
+                # If Audio/Video are ON
+                if on:
+                    StartVideo(cleaned, video, video_html)
+                else:
+                    if audio:
+                        message_placeholder = st.empty()
+                        message_placeholder.markdown(text)
+                        audioon(cleaned)
+                    else:
+                        message_placeholder = st.empty()
+                        message_placeholder.markdown(cleaned)
+                st.session_state.messages.append({"role": "assistant", "content": response['answer']})
+
+##########################################################################################################################################
+##########################################################################################################################################
+    #TEXT INPUT
+##########################################################################################################################################
+#If you want Video + Audio ON
+if user_prompt := st.chat_input("What is up?"):
+    st.session_state.messages.append({"role": "user", "content": user_prompt})
+    with st.chat_message("user"):
+        st.markdown(user_prompt)
+    with st.chat_message("assistant", avatar=assistant_logo):
+        #Add Thinking spinner until the text is ready
+        with st.spinner("Thinking..."):
+            if goonline:
+                new_llw = re.sub(r'\byour\b', talent, user_prompt)
+                schema = newstopics(new_llw)
+                internet = str(schema['text'])
+                response = chain.invoke(input={"question": user_prompt,"human_input": internet})
+            else:
+                internet=""
+                response = chain.invoke(input={"question": user_prompt,"human_input": internet})
+            text = str(response['answer'])
+            cleaned = re.sub(r'\*.*?\*', '', text)                      
+
+        #Show the Video or Text
+        if on:
+            StartVideo(cleaned, video, video_html)
+        else:
+            if audio:
+                message_placeholder = st.empty()
+                message_placeholder.markdown(text)
+                audioon(cleaned)
+            else:
+                message_placeholder = st.empty()
                 message_placeholder.markdown(text)
 
-                if audioonly:
-                    #ElevelLabs API Call and Return
-                    if talent == "Justin":
-                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                    if talent == "Justin Age 12":
-                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                    if talent == "Justin Age 5":
-                        audio=client2.generate(text=cleaned, voice='Justin', model="eleven_turbo_v2")
-                    #audio = client2.generate(text=cleaned, voice="Justin", model="eleven_turbo_v2")
-                    # Create single bytes object from the returned generator.
-                    data = b"".join(audio)
-                    ##send data to audio tag in HTML
-                    audio_base64 = base64.b64encode(data).decode('utf-8')
-                    audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'     
-                    st.markdown(audio_tag, unsafe_allow_html=True)
-
-                if mode == "Roleplay":
-                    responsedm = dmchain.run(cleaned)
-                    #responsemulti = multichain.run(cleaned)
-                    st.warning("Scene Update:  \n"+responsedm)
-                    #st.warning(responsemulti)
-                else:
-                    if not ("?"  in cleaned):
-                        responsequestion = questionchain.run(cleaned)
-                        st.warning("Follow-Up Suggestions:  \n"+responsequestion) 
-                st.session_state.messages.append({"role": "assistant", "content": response['answer']})
+        #Show the Follow Up Question or DM Response
+        if mode == "Roleplay":
+            responsedm = dmchain.run(cleaned)
+            st.warning("Scene Update:  \n"+responsedm)
+        else:
+            if not ("?"  in cleaned):
+                responsequestion = questionchain.run(cleaned)
+                st.warning("Follow-Up Suggestions:  \n"+responsequestion) 
+        st.session_state.messages.append({"role": "assistant", "content": response['answer']})
+#Show the Feedback UI
+###########################################################################################################     
+#feedback_key = f"feedback_{int(2)}"
+#if feedback_key not in st.session_state:
+#    st.session_state[feedback_key] = None
+#def handle_feedback(user_response, emoji=None):
+#    st.session_state.messages.append(f"Feedback submitted: {user_response}", icon=emoji)
+#    st.toast("✔️ Feedback received!")
+#feedback = streamlit_feedback(feedback_type="thumbs",optional_text_label="Please provide an explanation")
+##########################################################################################################################################
