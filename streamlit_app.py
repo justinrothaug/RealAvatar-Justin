@@ -206,7 +206,7 @@ with st.sidebar:
     with tab2:
             st.button('Clear Chat', on_click=ClearChat, key = "123", use_container_width=True)
             on = st.toggle("Video + Audio", value=False)
-            audioonly = st.toggle("Audio Only", value=True)
+            audio = st.toggle("Audio Only", value=True)
             goonline = st.toggle("Online", value=True)
             multichat = st.toggle("Add Second Character", value=False)
             VideoHack = st.toggle("Ex-Human Stream Hack", value=False)
